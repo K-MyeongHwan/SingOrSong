@@ -1,20 +1,21 @@
-/*!
+.mySearch {
+  display : flex;
+  padding : 15px;
+  margin : 20px;
+}
 
-=========================================================
-* Light Bootstrap Dashboard React - v2.0.1
-=========================================================
+.content {
+  height : auto;
+  min-height : 100vh;
+}
 
-* Product Page: https://www.creative-tim.com/product/light-bootstrap-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/light-bootstrap-dashboard-react/blob/master/LICENSE.md)
+.myFooter {
+  position : relative;
+  transform : translateY(0%);
+  align-items : center;
+  justify-content : center;
+}
 
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 .fixed-plugin .button-container .github-btn {
   display: inline-block;
   font-size: 14px;
