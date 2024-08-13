@@ -6,6 +6,7 @@ import Footer from "../components/Footer/Footer";
 import Sidebar from "../components/Sidebar/Sidebar";
 import routes from "../routes.js";
 import sidebarImage from "../assets/img/sidebarImage.png";
+import Song from "../views/Song";
 
 function Main() {
   //CSS
@@ -48,6 +49,7 @@ function Main() {
             <div className="content">
                   <Routes>
                     {getRoutes(routes)}
+                    <Route path="song/:songNum" element={<Song />}/>
                   </Routes>
             </div>
             <div className="myFooter">
