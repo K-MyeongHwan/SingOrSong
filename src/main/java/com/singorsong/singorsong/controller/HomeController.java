@@ -23,11 +23,6 @@ public class HomeController {
         this.songService = songService;
     }
 
-    @GetMapping("/")
-    public String getTest(){
-        return "test";
-    }
-
     @GetMapping("/categoryList")
     public List<Category> getCategoryList() {
         List<Category> result = categoryService.findCategoryAll();
@@ -58,6 +53,17 @@ public class HomeController {
         System.out.println(result);
 
         if(!(result.isEmpty())) {
+            return result;
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "entity not found");
+        }
+    }
+
+    @GetMapping("/song/{songNum}")
+    public Song getSongBySongNum(@PathVariable("songNum") Long songNum) {
+        Song result = songService.findSongBySongNum(songNum.intValue());
+
+        if(result.getSongNum() > 0) {
             return result;
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "entity not found");
