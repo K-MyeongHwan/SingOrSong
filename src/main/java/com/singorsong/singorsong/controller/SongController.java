@@ -33,6 +33,17 @@ public class SongController {
         }
     }
 
+    @GetMapping("/search/{songName}")
+    public List<Song> getSongBySongName(@PathVariable("songName") String songName) {
+        List<Song> result = songService.findSongBySongName(songName);
+
+        if(!result.isEmpty()) {
+            return result;
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "entity not found");
+        }
+    }
+
     @ResponseBody
     @PostMapping("/audio")
     public LinkedHashMap getAudio() throws Exception{
@@ -49,4 +60,5 @@ public class SongController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "entity not found");
         }
     }
+
 }

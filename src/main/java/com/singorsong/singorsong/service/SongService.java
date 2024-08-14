@@ -32,14 +32,18 @@ public class SongService {
 
     //songBySongNum
     public Song findSongBySongNum(int songNum) {
-        return songRepository.findBySongNum(songNum);
+        return songRepository.findSongBySongNum(songNum);
     }
 
     //updateReplayCount
     @Transactional
     public void updateReplayCount(int songNum) {
-        Song song = songRepository.findBySongNum(songNum);
+        Song song = songRepository.findSongBySongNum(songNum);
         song.setReplayCount(1 + song.getReplayCount());
         songRepository.save(song);
+    }
+
+    public List<Song> findSongBySongName(String songName) {
+        return songRepository.findSongBySongNameContains(songName);
     }
 }
