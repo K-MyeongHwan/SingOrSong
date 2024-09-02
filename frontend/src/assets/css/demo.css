@@ -1,3 +1,24 @@
+.myCheckButton {
+  padding : 5px;
+}
+.myEmail h4 {
+  margin-right : 15px;
+}
+
+.myEmail {
+  display : flex;
+}
+
+.mySignUp {
+  margin-left : auto;
+  margin-bottom : 20px;
+}
+
+.myLoginHelper {
+  color : rgba(103, 103, 255, 0.8);
+  display : flex;
+}
+
 .mySearch {
   display : flex;
   padding : 15px;

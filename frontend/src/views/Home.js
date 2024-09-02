@@ -234,7 +234,7 @@ function Home() {
                         <h2>곡 검색</h2>
                         <hr/>
                         <Row>
-                            <Col className="pl-1" md="6">
+                           <Col className="pl-1" md="6">
                                 <Form.Group>
                                     {searchTypeComponent}
                                 </Form.Group>
