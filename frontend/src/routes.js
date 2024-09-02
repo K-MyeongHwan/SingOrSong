@@ -6,6 +6,7 @@ import Icons from "./views/Icons.js";
 import Maps from "./views/Maps.js";
 import Notifications from "./views/Notifications.js";
 import Upgrade from "./views/Upgrade.js";
+import Login from "./views/Login";
 
 const dashboardRoutes = [
   {
@@ -20,7 +21,13 @@ const dashboardRoutes = [
     path: "/home",
     name: "Home",
     icon: "nc-icon nc-grid-45",
-    component: Home,
+    component: Home
+  },
+  {
+    path: "/login",
+    name: "Login",
+    icon: "nc-icon nc-key-25",
+    component: Login
   },
   {
     path: "/user",
