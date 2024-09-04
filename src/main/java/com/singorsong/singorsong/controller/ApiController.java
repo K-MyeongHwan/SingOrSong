@@ -3,6 +3,7 @@ package com.singorsong.singorsong.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.singorsong.singorsong.service.ApiService;
+import com.singorsong.singorsong.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -28,18 +29,70 @@ public class ApiController {
         return "";
     }
 
-    @GetMapping("/kakao/{code}")
-    public String kakaoAccessToken(@PathVariable("code") String code) {
-        System.out.println(code);
+    @PostMapping("/kakao/{code}")
+    public String getKakaoId(@PathVariable("code") String code) {
+        ObjectMapper mapper = new ObjectMapper();
         try {
-            String result = apiService.getAccessToken(code);
-            System.out.println(code);
+            String result = apiService.getAccessToken(code, "kakao");
             System.out.println(result);
-            return result;
-        } catch(Exception e) {
+
+            return mapper.writeValueAsString(apiService.getUserInfo(result, "kakao"));
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
 
+        return "";
+    }
+
+    @PostMapping("/google")
+    public String getGoogleEnv() {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(apiService.findGoogleEnv());
+        } catch (Exception e) {
+            System.out.print(e.getMessage());
+        }
+
+        return "";
+    }
+
+    @PostMapping("/google/code")
+    public String getGoogleId(@RequestParam(value = "code") String code) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            String result = apiService.getAccessToken(code, "google");
+            System.out.println(result);
+
+            return mapper.writeValueAsString(apiService.getUserInfo(result, "google"));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return "";
+    }
+
+    @PostMapping("/naver")
+    public String getNaverEnv() {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(apiService.findNaverEnv());
+        } catch (Exception e) {
+            System.out.print(e.getMessage());
+        }
+
+        return "";
+    }
+
+    @PostMapping("/naver/{code}")
+    public String getNaverId(@PathVariable("code") String code) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            String result = apiService.getAccessToken(code, "naver");
+            System.out.println(result);
+
+            return mapper.writeValueAsString(apiService.getUserInfo(result, "naver"));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         return "";
     }
 }

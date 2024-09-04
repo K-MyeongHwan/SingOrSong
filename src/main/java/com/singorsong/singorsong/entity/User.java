@@ -31,13 +31,19 @@ public class User {
     @Column(name="userGender")
     private int userGender;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name="roleId")
     @Setter
     private Role role;
 
+    @ManyToOne
+    @JoinColumn(name="platId")
+    @Setter
+    private Platform platform;
+
     @Column(name="userPassword")
     @Setter
+    @Getter
     private String userPassword;
 
     @Column(name="userBirth")

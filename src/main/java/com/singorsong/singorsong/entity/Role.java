@@ -1,10 +1,10 @@
 package com.singorsong.singorsong.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity(name="Role")
 @Getter
@@ -19,6 +19,9 @@ public class Role {
 
     @Column(name="roleName")
     private String roleName;
+
+    @OneToMany(mappedBy="role")
+    private List<User> userList = new ArrayList<User>();
 
     @Builder
     public Role(int roleId, String roleName) {
