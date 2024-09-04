@@ -96,7 +96,7 @@ function Register() {
     }
 
     const insertUserRequest = (User) => {
-        axios.post("/api/user/register/new", User).then((response) => {
+        axios.post(`/api/user/register/new/SoS`, User).then((response) => {
             console.log(response.data);
             Swal.fire({
                 title: "회원가입 성공",

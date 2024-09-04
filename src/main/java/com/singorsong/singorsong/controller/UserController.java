@@ -46,14 +46,23 @@ public class UserController {
         }
     }
 
-    @PostMapping("/register/new")
-    public void registerNewUser(@RequestBody User user) {
+    @PostMapping("/register/new/{platName}")
+    public void registerNewUser(@RequestBody User user, @PathVariable("platName") String platName) {
         try {
-
-            User result = userService.insertUser(user);
-
+            userService.insertUser(user, platName);
         } catch(Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @GetMapping("/checkName/{userName}")
+    public Boolean findUserByUserName(@PathVariable("userName") String userName) {
+        if(userService.getUserByUserName(userName).isEmpty()) {
+            return true;
+        } else if(!userService.getUserByUserName(userName).isEmpty()) {
+            return false;
+        }  else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "entity not found");
         }
     }
 }
