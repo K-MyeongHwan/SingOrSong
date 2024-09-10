@@ -1,14 +1,16 @@
 package com.singorsong.singorsong.service;
 
-import com.singorsong.singorsong.entity.Category;
-import com.singorsong.singorsong.entity.Role;
-import com.singorsong.singorsong.entity.Song;
-import com.singorsong.singorsong.entity.User;
+import com.singorsong.singorsong.entity.*;
 import com.singorsong.singorsong.repository.PlatformRepository;
 import com.singorsong.singorsong.repository.RoleRepository;
 import com.singorsong.singorsong.repository.SongRepository;
 import com.singorsong.singorsong.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,19 +23,21 @@ public class UserService {
     private final RoleRepository roleRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final PlatformRepository platformRepository;
+    private final AuthenticationManager authenticationManager;
 
-    public UserService(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder bCryptPasswordEncoder, PlatformRepository platformRepository) {
+    public UserService(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder bCryptPasswordEncoder, PlatformRepository platformRepository, AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.platformRepository = platformRepository;
+        this.authenticationManager = authenticationManager;
     }
 
     public List<User> getUserByNickName(String nickName) {
         return userRepository.findUserByNickName(nickName);
     }
 
-    public List<User> getUserByEmail(String userEmail) {
+    public User getUserByEmail(String userEmail) {
         return userRepository.findUserByUserEmail(userEmail);
     }
 
@@ -49,5 +53,16 @@ public class UserService {
 
     public List<User> getUserByUserName(String userName) {
         return userRepository.findUserByUserName(userName);
+    }
+
+    public UserDetails login(String userEmail, String userPassword) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(userEmail, userPassword));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        CustomUserDetail userDetail = (CustomUserDetail) authentication.getPrincipal();
+
+        return userDetail;
     }
 }

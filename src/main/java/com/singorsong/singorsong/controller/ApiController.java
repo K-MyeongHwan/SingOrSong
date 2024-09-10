@@ -2,8 +2,11 @@ package com.singorsong.singorsong.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.singorsong.singorsong.entity.CustomUserDetail;
 import com.singorsong.singorsong.service.ApiService;
 import com.singorsong.singorsong.service.UserService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -15,6 +18,14 @@ public class ApiController {
 
     public ApiController(ApiService apiService) {
         this.apiService = apiService;
+    }
+
+    @GetMapping("/sos")
+    public String login() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println(authentication.getPrincipal());
+
+        return "";
     }
 
     @PostMapping("/kakao")
