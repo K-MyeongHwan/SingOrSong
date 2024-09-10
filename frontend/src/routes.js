@@ -7,15 +7,15 @@ import Maps from "./views/Maps.js";
 import Notifications from "./views/Notifications.js";
 import Upgrade from "./views/Upgrade.js";
 import Login from "./views/Login";
+import MyPage from "./views/MyPage";
 
 const dashboardRoutes = [
   {
     upgrade: true,
-    path: "/upgrade",
-    name: "Upgrade to PRO",
-    icon: "nc-icon nc-alien-33",
-    component: Upgrade,
-    layout: "/admin"
+    path: "/login",
+    name: "Login",
+    icon: "nc-icon nc-key-25",
+    component: Login,
   },
   {
     path: "/home",
@@ -24,17 +24,11 @@ const dashboardRoutes = [
     component: Home
   },
   {
-    path: "/login",
-    name: "Login",
-    icon: "nc-icon nc-key-25",
-    component: Login
-  },
-  {
-    path: "/user",
-    name: "User Profile",
+    upgrade: true,
+    path: "/myPage",
+    name: "MyPage",
     icon: "nc-icon nc-circle-09",
-    component: UserProfile,
-    layout: "/admin"
+    component: MyPage,
   },
   {
     path: "/table",

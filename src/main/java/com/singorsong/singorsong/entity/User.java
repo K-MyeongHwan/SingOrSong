@@ -34,6 +34,7 @@ public class User {
     @ManyToOne
     @JoinColumn(name="roleId")
     @Setter
+    @Getter
     private Role role;
 
     @ManyToOne

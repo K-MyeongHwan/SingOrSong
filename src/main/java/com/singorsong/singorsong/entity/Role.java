@@ -3,6 +3,7 @@ package com.singorsong.singorsong.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +18,7 @@ public class Role {
     @Setter
     private int roleId;
 
+    @Getter
     @Column(name="roleName")
     private String roleName;
 

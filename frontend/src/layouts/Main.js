@@ -1,4 +1,4 @@
-import React from "react";
+import React, {createContext, useState} from "react";
 import {useLocation, Route, Routes} from "react-router-dom";
 
 import Footer from "../components/Footer/Footer";
@@ -9,9 +9,13 @@ import Song from "../views/Song";
 import SignUp from "../views/Register";
 import Register from "../views/Register";
 import Oauth from "../views/Oauth";
+import MyPage from "../views/MyPage";
+
+export const MainContext = createContext();
 
 function Main() {
-    //CSS
+    const [isLogin, setIsLogin] = useState(false);
+
     const [image, setImage] = React.useState(sidebarImage);
     const [color, setColor] = React.useState("black");
     const [hasImage, setHasImage] = React.useState(true);
@@ -45,22 +49,24 @@ function Main() {
     };
 
     return (
-        <div className="wrapper">
-            <Sidebar color={color} image={hasImage ? image : ""} routes={routes}/>
-            <div className="main-panel" ref={mainPanel}>
-                <div className="content">
-                    <Routes>
-                        {getRoutes(routes)}
-                        <Route path="song/:songNum" element={<Song/>}/>
-                        <Route path="register" element={<Register />}/>
-                        <Route path="oauth/:type" element={<Oauth />}/>
-                    </Routes>
-                </div>
-                <div className="myFooter">
-                    <Footer/>
+        <MainContext.Provider value={{isLogin, setIsLogin}}>
+            <div className="wrapper">
+                <Sidebar color={color} image={hasImage ? image : ""} routes={routes}/>
+                <div className="main-panel" ref={mainPanel}>
+                    <div className="content">
+                        <Routes>
+                            {getRoutes(routes)}
+                            <Route path="song/:songNum" element={<Song/>}/>
+                            <Route path="register" element={<Register/>}/>
+                            <Route path="oauth/:type" element={<Oauth/>}/>
+                        </Routes>
+                    </div>
+                    <div className="myFooter">
+                        <Footer/>
+                    </div>
                 </div>
             </div>
-        </div>
+        </MainContext.Provider>
     );
 }
 
