@@ -5,31 +5,33 @@ import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 @ToString
-public class CustomUserDetail implements UserDetails {
-    @Getter
+public class CustomUserDetail implements UserDetails, OAuth2User {
     private int userId;
 
-    private final String userName;
-    private final String userPassword;
-    private String userEmail;
+    private final Collection<GrantedAuthority> authorities;
 
-    @Getter
-    private Collection<GrantedAuthority> authorities;
+    private final User user;
 
-    private User user;
+    //OAuth2User , accessToken 으로 획득한 사용자 정보 ( JSON )
+    private Map<String, Object> attributes;
 
-    public CustomUserDetail(int userId, String userName, String userPassword, String userEmail, String role) {
-        this.userId = userId;
-        this.userName = userName;
-        this.authorities = createAuthorities(role);
-        this.userEmail = userEmail;
-        this.userPassword = userPassword;
+    public CustomUserDetail(User user) {
+        this.user = user;
+        this.authorities = createAuthorities(user.getRole().getRoleName());
+    }
+
+    public CustomUserDetail(User user, Map<String, Object> attributes) {
+        this.user = user;
+        this.authorities = createAuthorities(user.getRole().getRoleName());
+        this.attributes = attributes;
     }
 
     //권한 생성
@@ -40,13 +42,33 @@ public class CustomUserDetail implements UserDetails {
     }
 
     @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return authorities;
+    }
+
+    @Override
+    public Map<String, Object> getAttributes() {
+        return attributes;
+    }
+
+    //////////////
+    @Override
     public String getPassword() {
-        return userPassword;
+        return user.getUserPassword();
     }
 
     @Override
     public String getUsername() {
-        return userName;
+        return user.getUserEmail();
+    }
+
+    @Override
+    public String getName() {
+        return user.getUserEmail();
+    }
+
+    public int getUserId() {
+        return user.getUserId();
     }
 
 }

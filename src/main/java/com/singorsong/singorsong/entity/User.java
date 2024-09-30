@@ -1,5 +1,6 @@
 package com.singorsong.singorsong.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -9,6 +10,7 @@ import java.util.Date;
 @Getter
 @ToString
 @NoArgsConstructor
+@AllArgsConstructor
 public class User {
     @Id
     @Column(name="userId")
@@ -32,14 +34,18 @@ public class User {
     private int userGender;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name="roleId")
     @Setter
     @Getter
+    @ToString.Exclude
     private Role role;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name="platId")
     @Setter
+    @ToString.Exclude
     private Platform platform;
 
     @Column(name="userPassword")

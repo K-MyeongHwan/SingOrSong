@@ -6,15 +6,13 @@ import Sidebar from "../components/Sidebar/Sidebar";
 import routes from "../routes.js";
 import sidebarImage from "../assets/img/sidebarImage.png";
 import Song from "../views/Song";
-import SignUp from "../views/Register";
 import Register from "../views/Register";
-import Oauth from "../views/Oauth";
-import MyPage from "../views/MyPage";
+import axios from "axios";
 
 export const MainContext = createContext();
 
 function Main() {
-    const [isLogin, setIsLogin] = useState(false);
+    const [isLogin, setIsLogin] = useState();
 
     const [image, setImage] = React.useState(sidebarImage);
     const [color, setColor] = React.useState("black");
@@ -33,6 +31,12 @@ function Main() {
             var element = document.getElementById("bodyClick");
             element.parentNode.removeChild(element);
         }
+
+        axios.post("/api/user/isLogin").then((response)=>{
+            setIsLogin(response.data);
+        }).catch((error)=>{
+            console.log(error);
+        })
     }, [location]);
 
     //React
@@ -58,7 +62,6 @@ function Main() {
                             {getRoutes(routes)}
                             <Route path="song/:songNum" element={<Song/>}/>
                             <Route path="register" element={<Register/>}/>
-                            <Route path="oauth/:type" element={<Oauth/>}/>
                         </Routes>
                     </div>
                     <div className="myFooter">

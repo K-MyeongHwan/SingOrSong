@@ -41,9 +41,9 @@ public class UserService {
         return userRepository.findUserByUserEmail(userEmail);
     }
 
-    public void insertUser(User user, String platName) {
+    public void insertUser(User user) {
         user.setRole(roleRepository.findRoleByRoleId(1));
-        user.setPlatform(platformRepository.findByPlatName(platName));
+        user.setPlatform(platformRepository.findByPlatName("SoS"));
         if(!(user.getUserPassword()==null)) {
             user.setUserPassword(bCryptPasswordEncoder.encode(user.getUserPassword()));
         }
@@ -53,6 +53,10 @@ public class UserService {
 
     public List<User> getUserByUserName(String userName) {
         return userRepository.findUserByUserName(userName);
+    }
+
+    public User getUserByUserId(int userId) {
+        return userRepository.findUserByUserId(userId);
     }
 
     public UserDetails login(String userEmail, String userPassword) {
