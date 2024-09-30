@@ -23,44 +23,6 @@ function Login() {
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
 
-    const handleKakaoApi = ()=>{
-        axios.post("/api/oauth/kakao").then((response)=>{
-            const client_id= response.data.client_id;
-            const redirect_uri = response.data.redirect_uri;
-            const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${client_id}&redirect_uri=${redirect_uri}&response_type=code`;
-
-            window.location.href = kakaoURL;
-        }).catch((error)=>{
-            console.log(error);
-        })
-    }
-
-    const handleGoogleApi = ()=>{
-        axios.post("/api/oauth/google").then((response)=>{
-            const client_id= response.data.client_id;
-            const redirect_uri = response.data.redirect_uri;
-            const googleURL = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${client_id}&redirect_uri=${redirect_uri}&response_type=code&scope=email profile`;
-
-            window.location.href = googleURL;
-        }).catch((error)=>{
-            console.log(error);
-        })
-    }
-
-    const handleNaverApi = ()=>{
-        axios.post("/api/oauth/naver").then((response)=>{
-            const client_id= response.data.client_id;
-            const redirect_uri = response.data.redirect_uri;
-            const state = encodeURI("naverApi");
-
-            const naverURL = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${client_id}&state=${state}&redirect_uri=${redirect_uri}`;
-
-            window.location.href = naverURL;
-        }).catch((error)=>{
-            console.log(error);
-        })
-    }
-
     const loginHandler = ()=>{
         console.log(email + "." + password);
         const data = {
@@ -112,10 +74,10 @@ function Login() {
                                     <Col className="pl-1" md="6">
                                         <Form.Group>
                                             <label>이메일</label>
-                                            <Form.Control onChange={(e)=>{
+                                            <Form.Control onChange={(e) => {
                                                 setEmail(e.target.value);
                                             }}
-                                                type="text"
+                                                          type="text"
                                             ></Form.Control>
                                         </Form.Group>
                                     </Col>
@@ -123,29 +85,29 @@ function Login() {
                                     <Col className="pl-1" md="6">
                                         <Form.Group>
                                             <label>비밀번호</label>
-                                            <Form.Control onChange={(e)=>{
+                                            <Form.Control onChange={(e) => {
                                                 setPassword(e.target.value);
                                             }}
-                                                type="password"
+                                                          type="password"
                                             ></Form.Control>
                                         </Form.Group>
                                         <br/>
                                     </Col>
                                     <Col className="pl-1" md="6"/>
                                     <Col className="pl-1 myLoginHelper" md="5">
-                                        <div onClick={(e)=>{
+                                        <div onClick={(e) => {
                                             navigate("/register");
                                         }}>
                                             회원가입
                                         </div>
                                         &nbsp;|&nbsp;
-                                        <div onClick={(e)=>{
+                                        <div onClick={(e) => {
                                             console.log(e.target.value);
                                         }}>
                                             이메일 찾기
                                         </div>
                                         &nbsp;|&nbsp;
-                                        <div onClick={(e)=>{
+                                        <div onClick={(e) => {
                                             console.log(e.target.value);
                                         }}>
                                             비밀번호 찾기
@@ -155,7 +117,7 @@ function Login() {
                                         <Button
                                             className="btn-fill pull-right"
                                             variant="info"
-                                            onClick={(e)=>{
+                                            onClick={(e) => {
                                                 loginHandler();
                                             }}
                                         >
@@ -168,24 +130,12 @@ function Login() {
                                     <h5>또는</h5>
                                 </Col>
                                 <Row>
-                                <Col className="pl-1 myLoginHelper" md="5">
-                                        <div onClick={(e)=>{
-                                            handleKakaoApi();
-                                        }}>
-                                            KaKao
-                                        </div>
+                                    <Col className="pl-1 myLoginHelper" md="5">
+                                        <a href="/oauth2/authorization/google">Google</a>
                                         &nbsp;|&nbsp;
-                                        <div onClick={(e)=>{
-                                            handleGoogleApi();
-                                        }}>
-                                            Google
-                                        </div>
+                                        <a href="/oauth2/authorization/kakao">Kakao</a>
                                         &nbsp;|&nbsp;
-                                        <div onClick={(e)=>{
-                                            handleNaverApi();
-                                        }}>
-                                            Naver
-                                        </div>
+                                        <a href="/oauth2/authorization/naver">Naver</a>
                                     </Col>
                                 </Row>
                             </Card.Body>

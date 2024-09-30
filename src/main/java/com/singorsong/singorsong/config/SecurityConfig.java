@@ -1,10 +1,11 @@
 package com.singorsong.singorsong.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.singorsong.singorsong.service.CustomOauth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -12,19 +13,25 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
 public class SecurityConfig{
-    private final ObjectMapper objectMapper;
+    private final CustomOauth2UserService oauth2UserService;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    public SecurityConfig(CustomOauth2UserService oauth2UserService, BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.oauth2UserService = oauth2UserService;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    }
 
     // 특정 HTTP 요청에 대한 웹 기반 보안 구성
     //requestMatchers 경로제한
@@ -34,14 +41,19 @@ public class SecurityConfig{
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/api/oauth/sos")
+                        .defaultSuccessUrl("/api/oauth/sosLogin")
                         .usernameParameter("userEmail")
                         .passwordParameter("userPassword"))
+                .oauth2Login(oauth2Login -> oauth2Login
+                        .loginPage("/login")
+                        .userInfoEndpoint(userInfo -> userInfo.userService(oauth2UserService))
+                        .defaultSuccessUrl("/api/oauth/socialLogin"))
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/**").permitAll()
                         .anyRequest().authenticated())
                 .logout((logout) -> logout
-                        .logoutSuccessUrl("/login")
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/api/user/logout"))
+                        .logoutSuccessUrl("/api/oauth/sosLogout")
                         .invalidateHttpSession(true))
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -51,13 +63,6 @@ public class SecurityConfig{
                         httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()));
         return http.build();
     }
-
-
-    @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
 
     //Security 인증 처리
     @Bean

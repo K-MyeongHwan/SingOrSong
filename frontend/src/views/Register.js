@@ -96,7 +96,7 @@ function Register() {
     }
 
     const insertUserRequest = (User) => {
-        axios.post(`/api/user/register/new/SoS`, User).then((response) => {
+        axios.post(`/api/user/register/new`, User).then((response) => {
             console.log(response.data);
             Swal.fire({
                 title: "회원가입 성공",
@@ -320,9 +320,13 @@ function Register() {
                                         <Col className="pl-1" md="3">
                                             <Form.Group>
                                                 <InputLabel>생년월일</InputLabel>
-                                                <DatePicker required onChange={(e) => {
-                                                    setBirth(e);
-                                                }}/>
+                                                <Form.Control
+                                                    placeholder="UserBirthDay"
+                                                    type="date"
+                                                    onChange={(e)=>{
+                                                        setBirth(e.target.value);
+                                                    }}
+                                                ></Form.Control>
                                             </Form.Group>
                                         </Col>
                                     </Row>

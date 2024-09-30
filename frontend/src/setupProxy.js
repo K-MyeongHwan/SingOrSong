@@ -7,5 +7,13 @@ module.exports = function (app) {
             target: 'http://localhost:8080/api/',
             changeOrigin: true,
         })
+    );
+
+    app.use(
+        '/oauth2/authorization/',
+        createProxyMiddleware({
+            target: 'http://localhost:8080/oauth2/authorization/',
+            changeOrigin: true,
+        })
     )
 };

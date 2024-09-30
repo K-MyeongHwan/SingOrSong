@@ -4,7 +4,6 @@ import com.singorsong.singorsong.entity.Category;
 import com.singorsong.singorsong.entity.CustomUserDetail;
 import com.singorsong.singorsong.entity.Song;
 import com.singorsong.singorsong.entity.User;
-import com.singorsong.singorsong.service.ApiService;
 import com.singorsong.singorsong.service.CategoryService;
 import com.singorsong.singorsong.service.SongService;
 import com.singorsong.singorsong.service.UserService;
@@ -12,6 +11,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -30,6 +32,7 @@ public class UserController {
     @PostMapping("/login")
     public Boolean login(@RequestParam(value = "userEmail") String userEmail, @RequestParam(value = "userPassword") String userPassword, HttpServletRequest request) {
         try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             CustomUserDetail user = (CustomUserDetail) userService.login(userEmail, userPassword);
 
             request.getSession().invalidate();
@@ -40,13 +43,34 @@ public class UserController {
             System.out.println("****************************************");
             System.out.println(user.toString());
             System.out.println(session.getAttribute("loginUser"));
-            System.out.println(user.getAuthorities());
+            System.out.println(authentication.getPrincipal().toString());
             System.out.println("****************************************");
 
             return true;
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return false;
+        }
+    }
+
+    @PostMapping("/isLogin")
+    public Boolean getIsLogin(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+
+        System.out.println(session.getAttribute("loginUser"));
+        return session.getAttribute("loginUser") != null;
+    }
+
+    @Secured("ROLE_USER")
+    @PostMapping("/loginUser")
+    public User getLoginUser(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        try {
+            int userId = (Integer) session.getAttribute("loginUser");
+            return userService.getUserByUserId(userId);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
         }
     }
 
@@ -72,10 +96,10 @@ public class UserController {
         }
     }
 
-    @PostMapping("/register/new/{platName}")
-    public void registerNewUser(@RequestBody User user, @PathVariable("platName") String platName) {
+    @PostMapping("/register/new")
+    public void registerNewUser(@RequestBody User user) {
         try {
-            userService.insertUser(user, platName);
+            userService.insertUser(user);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
