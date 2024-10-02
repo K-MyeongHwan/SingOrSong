@@ -23,14 +23,12 @@ public class UserService {
     private final RoleRepository roleRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final PlatformRepository platformRepository;
-    private final AuthenticationManager authenticationManager;
 
-    public UserService(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder bCryptPasswordEncoder, PlatformRepository platformRepository, AuthenticationManager authenticationManager) {
+    public UserService(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder bCryptPasswordEncoder, PlatformRepository platformRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.platformRepository = platformRepository;
-        this.authenticationManager = authenticationManager;
     }
 
     public List<User> getUserByNickName(String nickName) {
@@ -57,16 +55,5 @@ public class UserService {
 
     public User getUserByUserId(int userId) {
         return userRepository.findUserByUserId(userId);
-    }
-
-    public UserDetails login(String userEmail, String userPassword) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(userEmail, userPassword));
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        CustomUserDetail userDetail = (CustomUserDetail) authentication.getPrincipal();
-
-        return userDetail;
     }
 }

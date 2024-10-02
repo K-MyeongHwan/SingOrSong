@@ -1,5 +1,6 @@
 package com.singorsong.singorsong.config;
 
+import com.singorsong.singorsong.handler.OAuth2LoginSuccessHandler;
 import com.singorsong.singorsong.service.CustomOauth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -20,17 +21,17 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig{
     private final CustomOauth2UserService oauth2UserService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final OAuth2LoginSuccessHandler oauth2LoginSuccessHandler;
 
-    public SecurityConfig(CustomOauth2UserService oauth2UserService, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public SecurityConfig(CustomOauth2UserService oauth2UserService, BCryptPasswordEncoder bCryptPasswordEncoder, OAuth2LoginSuccessHandler oauth2LoginSuccessHandler) {
         this.oauth2UserService = oauth2UserService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.oauth2LoginSuccessHandler = oauth2LoginSuccessHandler;
     }
 
     // 특정 HTTP 요청에 대한 웹 기반 보안 구성
@@ -39,15 +40,15 @@ public class SecurityConfig{
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http	.csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
-                .formLogin(form -> form
+                .formLogin(formLogin -> formLogin
                         .loginPage("/login")
-                        .defaultSuccessUrl("/api/oauth/sosLogin")
-                        .usernameParameter("userEmail")
-                        .passwordParameter("userPassword"))
+                        .usernameParameter("username")
+                        .passwordParameter("password")
+                        .successHandler(oauth2LoginSuccessHandler))
                 .oauth2Login(oauth2Login -> oauth2Login
                         .loginPage("/login")
                         .userInfoEndpoint(userInfo -> userInfo.userService(oauth2UserService))
-                        .defaultSuccessUrl("/api/oauth/socialLogin"))
+                        .successHandler(oauth2LoginSuccessHandler))
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/**").permitAll()
                         .anyRequest().authenticated())

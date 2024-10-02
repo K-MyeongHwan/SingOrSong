@@ -24,38 +24,18 @@ function Login() {
     const [password, setPassword] = useState();
 
     const loginHandler = ()=>{
-        console.log(email + "." + password);
         const data = {
-            userEmail : email ,
-            userPassword : password
+            username : email ,
+            password : password
         };
-        axios.post("/api/user/login", null,{ params : data}).then((response)=>{
-            if(response.data) {
-                Swal.fire({
-                   title : "로그인",
-                   text : "로그인에 성공했습니다",
-                    icon : "success"
-                }).then(()=>{
-                    setIsLogin(true);
-                    navigate("/home");
-                })
-            } else {
-                Swal.fire({
-                    title : "로그인",
-                    text : "로그인에 실패했습니다, \n 이메일, 비밀번호를 다시 확인해주세요.",
-                    icon : "error"
-                }).then(()=>{
-
-                })
-            }
+        axios.post("/login", null,{ params : data}).then((response)=>{
+            console.log(response.data);
         }).catch((error)=>{
             console.log(error);
             Swal.fire({
-                title : "로그인",
-                text : "로그인에 실패했습니다, \n 이메일, 비밀번호를 다시 확인해주세요.",
+                title : "로그인 실패",
+                text : "이메일, 비밀번호를 잘 못 입력하셨습니다. 다시 한번 확인해주세요.",
                 icon : "error"
-            }).then(()=>{
-
             })
         })
     }

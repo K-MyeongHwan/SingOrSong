@@ -24,6 +24,8 @@ dependencies {
 	implementation("org.projectlombok:lombok")
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+	implementation ("io.jsonwebtoken:jjwt:0.9.1")
+	implementation ("javax.xml.bind:jaxb-api:2.3.0")
 	testImplementation("org.springframework.security:spring-security-test")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	annotationProcessor("org.projectlombok:lombok")
