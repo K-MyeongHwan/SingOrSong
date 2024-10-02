@@ -16,26 +16,6 @@ import java.util.Scanner;
 @RestController
 @RequestMapping("/api/oauth/")
 public class ApiController {
-
-    @GetMapping("/sosLogin")
-    public String login() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println(authentication.getPrincipal());
-        return authentication.getPrincipal().toString();
-    }
-
-    @GetMapping("/socialLogin")
-    public OAuth2User socialLogin(@AuthenticationPrincipal OAuth2User oauth2User) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        System.out.println("****************************************");
-        System.out.println(oauth2User);
-        System.out.println(authentication.getAuthorities());
-        System.out.println("****************************************");
-
-        return oauth2User;
-    }
-
     @GetMapping("/sosLogout")
     public String logout() {
         return "";

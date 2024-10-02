@@ -23,6 +23,7 @@ public class CustomUserDetail implements UserDetails, OAuth2User {
     //OAuth2User , accessToken 으로 획득한 사용자 정보 ( JSON )
     private Map<String, Object> attributes;
 
+    //일반 생성자
     public CustomUserDetail(User user) {
         this.user = user;
         this.authorities = createAuthorities(user.getRole().getRoleName());

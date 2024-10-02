@@ -29,30 +29,6 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/login")
-    public Boolean login(@RequestParam(value = "userEmail") String userEmail, @RequestParam(value = "userPassword") String userPassword, HttpServletRequest request) {
-        try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            CustomUserDetail user = (CustomUserDetail) userService.login(userEmail, userPassword);
-
-            request.getSession().invalidate();
-            HttpSession session = request.getSession(true);
-            session.setAttribute("loginUser", user.getUserId());
-            session.setMaxInactiveInterval(60 * 30);
-
-            System.out.println("****************************************");
-            System.out.println(user.toString());
-            System.out.println(session.getAttribute("loginUser"));
-            System.out.println(authentication.getPrincipal().toString());
-            System.out.println("****************************************");
-
-            return true;
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return false;
-        }
-    }
-
     @PostMapping("/isLogin")
     public Boolean getIsLogin(HttpServletRequest request) {
         HttpSession session = request.getSession();
