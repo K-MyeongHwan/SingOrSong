@@ -1,3 +1,15 @@
+.myCancelButton {
+  background-color : #fd5c63;
+  border-color: #fd5c63;
+  color : white;
+}
+
+.mySaveButton {
+  background-color : #59a985;
+  border-color: #59a985;
+  color : white;
+}
+
 .myCheckButton {
   padding : 5px;
 }

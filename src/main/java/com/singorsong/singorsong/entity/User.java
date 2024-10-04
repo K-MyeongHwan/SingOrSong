@@ -15,6 +15,7 @@ public class User {
     @Id
     @Column(name="userId")
     @GeneratedValue
+    @Setter
     private int userId;
 
     @Column(name="userName")
@@ -25,12 +26,14 @@ public class User {
     private String userEmail;
 
     @Column(name="nickName")
+    @Setter
     private String nickName;
 
     @Column(name="profileImageUrl")
     private String profileImageUrl;
 
     @Column(name="userGender")
+    @Setter
     private int userGender;
 
     @ManyToOne
@@ -54,6 +57,7 @@ public class User {
     private String userPassword;
 
     @Column(name="userBirth")
+    @Setter
     private Date userBirth;
 
     @Builder

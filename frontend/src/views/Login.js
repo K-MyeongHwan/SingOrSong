@@ -29,7 +29,7 @@ function Login() {
             password : password
         };
         axios.post("/login", null,{ params : data}).then((response)=>{
-            console.log(response.data);
+            navigate("/home");
         }).catch((error)=>{
             console.log(error);
             Swal.fire({

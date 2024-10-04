@@ -14,6 +14,9 @@ import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.savedrequest.RequestCache;
+import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -24,6 +27,7 @@ import java.util.Map;
 public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final UserService userService;
     private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+    private RequestCache requestCache = new HttpSessionRequestCache();
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -36,17 +40,18 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         System.out.println("*********************************");
         System.out.println("isSuccessHandler");
         System.out.println(authentication.getPrincipal().toString());
+        System.out.println(authentication.getAuthorities());
         System.out.println(type);
         System.out.println("*********************************");
 
         //Type 확인
-        if(type.equals("CustomUserDetail")) {
+        if (type.equals("CustomUserDetail")) {
             CustomUserDetail user = (CustomUserDetail) authentication.getPrincipal();
 
             //session 저장
             session.setAttribute("loginUser", user.getUserId());
             session.setMaxInactiveInterval(60 * 30);
-        } else if(type.equals("DefaultOAuth2User")) {
+        } else if (type.equals("DefaultOAuth2User")) {
             DefaultOAuth2User oauth2User = (DefaultOAuth2User) authentication.getPrincipal();
             String email = oauth2User.getAttribute("email");
 
@@ -58,8 +63,17 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
             session.setMaxInactiveInterval(60 * 30);
         }
 
-        System.out.println("Session LoginUser :" + session.getAttribute("loginUser"));
+        resultRedirectStrategy(request, response, authentication);
+    }
 
-        redirectStrategy.sendRedirect(request, response, "http://localhost:3000/home");
+    protected void resultRedirectStrategy(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
+        SavedRequest savedRequest = requestCache.getRequest(request, response);
+
+        if(savedRequest != null) {
+            String targetUrl = savedRequest.getRedirectUrl();
+            redirectStrategy.sendRedirect(request, response, targetUrl);
+        } else {
+            redirectStrategy.sendRedirect(request, response, "/");
+        }
     }
 }

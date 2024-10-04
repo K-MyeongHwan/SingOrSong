@@ -49,6 +49,22 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public void updateUser(User updateUser) {
+        User user = userRepository.findUserByUserId(updateUser.getUserId());
+        user.setUserEmail(updateUser.getUserEmail());
+        user.setUserGender(updateUser.getUserGender());
+        user.setNickName(updateUser.getNickName());
+        user.setUserBirth(updateUser.getUserBirth());
+
+        System.out.println(user.toString());
+
+        userRepository.save(user);
+    }
+
+    public void userDeleteByUserId(int userId) {
+        userRepository.deleteById(userId);
+    }
+
     public List<User> getUserByUserName(String userName) {
         return userRepository.findUserByUserName(userName);
     }

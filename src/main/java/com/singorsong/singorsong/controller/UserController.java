@@ -50,6 +50,30 @@ public class UserController {
         }
     }
 
+    @PutMapping("/update")
+    public void updateUser(@RequestBody User user, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        try {
+            int userId = (Integer) session.getAttribute("loginUser");
+            user.setUserId(userId);
+
+            userService.updateUser(user);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/delete")
+    public void deleteUser(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        try {
+            int userId = (Integer) session.getAttribute("loginUser");
+            userService.userDeleteByUserId(userId);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
     @GetMapping("/register/checkNick/{nickName}")
     public Boolean nickNameCheckDuplicates(@PathVariable("nickName") String nickName) {
         if (userService.getUserByNickName(nickName).isEmpty()) {
