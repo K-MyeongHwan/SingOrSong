@@ -16,39 +16,107 @@ import axios from "axios";
 import {MainContext} from "../layouts/Main";
 import Swal from "sweetalert2";
 import {useNavigate} from "react-router-dom";
-import {FormControl, FormControlLabel, InputLabel, Radio, RadioGroup} from "@mui/material";
+import {FormControl, FormControlLabel, InputLabel, Radio, RadioGroup, Switch} from "@mui/material";
+import Select from "react-select";
 
 function MyPage() {
     const navigate = useNavigate();
-    const [user, setUser] = useState({});
     const {isLogin, setIsLogin} = useContext(MainContext);
-    const [userGender, setUserGender] = useState("");
-    const [userBirth, setUserBirth] = useState();
+    const addressList = [
+        {
+            label: "naver.com",
+            value: "naver.com"
+        },
+        {
+            label: "gmail.com",
+            value: "gmail.com"
+        },
+        {
+            label: "daum.net",
+            value: "daum.net"
+        }
+    ];
+
+    const [user, setUser] = useState({});
+    const [nickName, setNickName] = useState("");
+    const [userEmail, setUserEmail] = useState("");
+    const [userEmailPlat, setUserEmailPlat] = useState("");
+    const [userGender, setUserGender] = useState(0);
+    const [userBirth, setUserBirth] = useState("");
+
+    const [userGenderText, setUserGenderText] = useState("");
+    const [userBirthText, setUserBirthText] = useState("");
+    const [userBirthComp, setUserBirthComp] = useState(<></>);
+    const [userGenderComp, setUserGenderComp] = useState(<></>);
+    const [userEmailComp, setUserEmailComp] = useState(<></>);
+    const [isUpdateOn, setIsUpdateOn] = useState(false);
+    const [updateButton, setUpdateButton] = useState(
+        <Button
+            className="btn-fill pull-right"
+            onClick={() => {
+                setIsUpdateOn(!isUpdateOn);
+            }}
+        >
+            프로필 변경
+        </Button>
+    );
 
     const getLoginUser = () => {
-        axios.post("api/user/loginUser").then(async (response) => {
-            console.log(response.data);
-            if (!response.data) {
-                Swal.fire({
-                    title: "마이 페이지",
-                    text: "미로그인 상태입니다. 로그인 상태를 확인해주세요.",
-                    icon: "error"
-                }).then(() => {
-                    navigate("/login");
-                })
+        axios.post("api/user/loginUser").then((response) => {
+            const userBirthText = (response.data.userBirth + "").split('T')[0];
+            let userGenderText = "";
+            if (response.data.userGender === 1) {
+                userGenderText = "남성";
+            } else if (response.data.userGender === 2) {
+                userGenderText = "여성";
+            } else {
+                userGenderText = "밝히고 싶지 않음";
             }
 
-            if (response.data.userGender === 1) {
-                setUserGender("남성");
-            } else if (response.data.userGender === 2) {
-                setUserGender("여성");
-            } else {
-                setUserGender("밝히고 싶지 않음");
-            }
-             setUser(response.data);
+            setUser(response.data);
+            setNickName(response.data.nickName);
+            setUserGenderText(userGenderText);
+            setUserBirthText(userBirthText);
+
+            setUserEmailComp(
+                <Form.Group>
+                    <label>이메일</label>
+                    <Form.Control
+                        defaultValue={response.data.userEmail}
+                        placeholder="Email"
+                        type="email"
+                        disabled
+                    ></Form.Control>
+                </Form.Group>
+            )
+            setUserBirthComp(
+                <Form.Control
+                    value={userBirthText}
+                    placeholder="BirthDay"
+                    type="text"
+                    disabled
+                ></Form.Control>
+            )
+            setUserGenderComp(
+                <FormControl>
+                    <RadioGroup row>
+                        <FormControlLabel
+                            control={<Radio size="small"/>}
+                            checked
+                            label={userGenderText}/>
+                    </RadioGroup>
+                </FormControl>
+            )
 
         }).catch((error) => {
             console.log(error);
+            Swal.fire({
+                title: "마이 페이지",
+                text: "미로그인 상태입니다. 로그인 상태를 확인해주세요.",
+                icon: "error"
+            }).then(() => {
+                navigate("/login");
+            })
         })
     }
 
@@ -69,9 +137,205 @@ function MyPage() {
         })
     }
 
-    useEffect( () => {
+    const deleteHandler = () => {
+        axios.delete("/api/user/delete").then((response)=>{
+            Swal.fire({
+                title : "유저 정보 삭제",
+                text : "유저 정보가 정상적으로 제거되었습니다.",
+                icon : "success"
+            }).then(()=>{
+                logoutHandler();
+            })
+        }).catch((error)=>{
+            console.log(error);
+            Swal.fire({
+                title : "유저 정보 삭제",
+                text : "유저 정보 제거 중 오류가 생겼습니다. 다시 한 번 시도해주세요.",
+                icon : "error"
+            }).then(()=>{
+            })
+        })
+    }
+
+    useEffect(() => {
         getLoginUser();
     }, []);
+
+    useEffect(() => {
+        const updateHandler = () => {
+            const email = userEmail + '@' + userEmailPlat;
+            const url = `/api/user/register/checkEmail/${email}`;
+            const user = {
+                userEmail: email,
+                nickName: nickName,
+                userGender: userGender,
+                userBirth: userBirth
+            }
+
+            axios.get(url).then((response) => {
+                console.log(response.data);
+                if (response.data) {
+                    axios.put("/api/user/update", user).then((response) => {
+                        Swal.fire({
+                            title: "유저 정보 수정",
+                            text: "유저 정보를 수정했습니다.",
+                            icon: "success"
+                        }).then(() => {
+                            window.location.reload();
+                        })
+                    }).catch((error) => {
+                        Swal.fire({
+                            title: "유저 정보 수정",
+                            text: "정보 수정 중 오류가 발생했습니다. 다시 한 번 시도해주세요.",
+                            icon: "error"
+                        }).then(() => {
+
+                        })
+                    });
+                } else {
+                    Swal.fire({
+                        title: "유저 정보 수정",
+                        text: "중복되는 이메일이 있습니다. 다른 이메일로 시도해주세요.",
+                        icon: "error"
+                    }).then(() => {
+
+                    })
+                }
+            }).catch((error) => {
+                console.log(error);
+            })
+        }
+
+        if (isUpdateOn) {
+            //true
+            //userEmailComp, userGenderComp, userBirthComp 변경
+            setUserEmailComp(
+                <Row>
+                    <Col className="pl-1" md="6">
+                        <Form.Group>
+                            <label>이메일</label>
+                            <Form.Control
+                                required
+                                placeholder="Email"
+                                type="text"
+                                onChange={(e) => {
+                                    setUserEmail(e.target.value);
+                                }}
+                            />
+                        </Form.Group>
+                    </Col>
+                    <Col className="pl-1" md="6">
+                        <div className="myEmail">
+                            <h4>
+                                @
+                            </h4>
+                            <Form.Group>
+                                <label>주소</label>
+                                <Select options={addressList}
+                                        placeholder="address.com"
+                                        onChange={(e) => {
+                                            setUserEmailPlat(e.value);
+                                        }}
+                                />
+                            </Form.Group>
+                        </div>
+                    </Col>
+                </Row>
+            )
+
+            setUserGenderComp(
+                <FormControl>
+                    <RadioGroup row onChange={(e) => {
+                        setUserGender(e.target.value);
+                    }}>
+                        <FormControlLabel value={1} control={<Radio size="small"/>}
+                                          label="남성"/>
+                        <FormControlLabel value={2} control={<Radio size="small"/>}
+                                          label="여성"/>
+                    </RadioGroup>
+                </FormControl>
+            )
+
+            setUserBirthComp(
+                <Form.Control
+                    defaultValue={userBirthText}
+                    placeholder="BirthDay"
+                    type="date"
+                    onChange={(e) => {
+                        setUserBirth(e.target.value);
+                    }}
+                ></Form.Control>
+            )
+
+            setUpdateButton(
+                <>
+                    <Button
+                        className="myCancelButton"
+                        onClick={() => {
+                            setIsUpdateOn(false);
+                        }}
+                    >
+                        취소
+                    </Button>
+                    &nbsp;&nbsp;
+                    <Button
+                        className="mySaveButton"
+                        onClick={() => {
+                            updateHandler()
+                        }}
+                    >
+                        저장
+                    </Button>
+                </>
+            )
+        } else {
+            //false
+            //userEmailComp, userGenderComp, userBirthComp 복귀
+            setNickName(user.nickName);
+            setUserEmailComp(
+                <Form.Group>
+                    <label>이메일</label>
+                    <Form.Control
+                        defaultValue={user.userEmail}
+                        placeholder="Email"
+                        type="email"
+                        disabled
+                    ></Form.Control>
+                </Form.Group>
+            );
+
+            setUserGenderComp(
+                <FormControl>
+                    <RadioGroup row>
+                        <FormControlLabel
+                            control={<Radio size="small"/>}
+                            checked
+                            label={userGenderText}/>
+                    </RadioGroup>
+                </FormControl>
+            )
+
+            setUserBirthComp(
+                <Form.Control
+                    value={userBirthText + ""}
+                    placeholder="BirthDay"
+                    type="text"
+                    disabled
+                ></Form.Control>
+            )
+
+            setUpdateButton(
+                <Button
+                    className="btn-fill pull-right"
+                    onClick={() => {
+                        setIsUpdateOn(!isUpdateOn);
+                    }}
+                >
+                    프로필 변경
+                </Button>
+            );
+        }
+    }, [isUpdateOn, nickName, userBirth, userEmail, userEmailPlat, userGender])
 
     return (
         <>
@@ -100,9 +364,12 @@ function MyPage() {
                                             <Form.Group>
                                                 <label>닉네임</label>
                                                 <Form.Control
-                                                    defaultValue={user.nickName}
+                                                    value={nickName + ""}
                                                     placeholder="Username"
-                                                    disabled
+                                                    onChange={(e) => {
+                                                        setNickName(e.target.value);
+                                                    }}
+                                                    disabled={!isUpdateOn}
                                                     type="text"
                                                 ></Form.Control>
                                             </Form.Group>
@@ -110,15 +377,7 @@ function MyPage() {
                                     </Row>
                                     <Row>
                                         <Col className="pl-1" md="8">
-                                            <Form.Group>
-                                                <label>이메일</label>
-                                                <Form.Control
-                                                    defaultValue={user.userEmail}
-                                                    placeholder="Email"
-                                                    type="email"
-                                                    disabled
-                                                ></Form.Control>
-                                            </Form.Group>
+                                            {userEmailComp}
                                         </Col>
                                     </Row>
                                     <br/>
@@ -126,34 +385,17 @@ function MyPage() {
                                         <Col className="pl-1" md="3">
                                             <Form.Group>
                                                 <InputLabel>성별</InputLabel>
-                                                <FormControl>
-                                                    <RadioGroup row>
-                                                        <FormControlLabel value={user.userGender} control={<Radio size="small"/>}
-                                                                          checked
-                                                                          label={userGender}/>
-                                                    </RadioGroup>
-                                                </FormControl>
+                                                {userGenderComp}
                                             </Form.Group>
                                         </Col>
                                         <Col className="pl-1" md="10">
                                             <Form.Group>
                                                 <label>생년월일</label>
-                                                <Form.Control
-                                                    defaultValue={user.userBirth}
-                                                    placeholder="Year"
-                                                    type="text"
-                                                ></Form.Control>
+                                                {userBirthComp}
                                             </Form.Group>
                                         </Col>
                                     </Row>
-                                    <Button
-                                        className="btn-fill pull-right"
-                                        type="submit"
-                                        variant="info"
-                                    >
-                                        Update Profile
-                                    </Button>
-                                    <div className="clearfix"></div>
+                                    {updateButton}
                                 </Form>
                             </Card.Body>
                         </Card>
@@ -161,10 +403,7 @@ function MyPage() {
                     <Col md="4">
                         <Card className="card-user">
                             <div className="card-image">
-                                <img
-                                    alt="..."
-                                    src={require("../assets/img/photo-1431578500526-4d9613015464.jpeg")}
-                                ></img>
+
                             </div>
                             <Card.Body>
                                 <div className="author">
@@ -217,6 +456,14 @@ function MyPage() {
                                     variant="link"
                                 >
                                     Logout
+                                </Button>
+                                <Button
+                                    className="btn-simple btn-icon"
+                                    href="#pablo"
+                                    onClick={(e) => deleteHandler()}
+                                    variant="link"
+                                >
+                                    Withdrawal
                                 </Button>
                             </div>
                         </Card>

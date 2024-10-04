@@ -310,9 +310,9 @@ function Register() {
                                                         setGender(e.target.value);
                                                     }}>
                                                         <FormControlLabel value={1} control={<Radio size="small"/>}
-                                                                          label="남자"/>
+                                                                          label="남성"/>
                                                         <FormControlLabel value={2} control={<Radio size="small"/>}
-                                                                          label="여자"/>
+                                                                          label="여성"/>
                                                     </RadioGroup>
                                                 </FormControl>
                                             </Form.Group>
