@@ -5,7 +5,6 @@ import {MainContext} from "../../layouts/Main";
 
 function Sidebar({color, image, routes}) {
     const location = useLocation();
-    const {isLogin, setIsLogin} = useContext(MainContext);
     const activeRoute = (routeName) => {
         return location.pathname.indexOf(routeName) > -1 ? "active" : "";
     };
@@ -22,9 +21,9 @@ function Sidebar({color, image, routes}) {
                 <Nav>
                     {routes.map((prop, key) => {
                         if (!prop.redirect)
-                            if(isLogin && prop.name === "Login") {
+                            if(sessionStorage.getItem("loginUser") && prop.name === "Login") {
                                 return ;
-                            } else if(!isLogin && prop.name === "MyPage") {
+                            } else if(!sessionStorage.getItem("loginUser") && prop.name === "MyPage") {
                                 return ;
                             }
                             return (

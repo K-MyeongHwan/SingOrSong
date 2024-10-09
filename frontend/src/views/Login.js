@@ -1,4 +1,4 @@
-import React, {useContext, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 
 // react-bootstrap components
 import {
@@ -19,7 +19,6 @@ import Main, {MainContext} from "../layouts/Main";
 
 function Login() {
     const navigate = useNavigate();
-    const {isLogin, setIsLogin} = useContext(MainContext);
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
 
@@ -29,7 +28,7 @@ function Login() {
             password : password
         };
         axios.post("/login", null,{ params : data}).then((response)=>{
-            navigate("/home");
+            navigate(0);
         }).catch((error)=>{
             console.log(error);
             Swal.fire({
@@ -39,6 +38,24 @@ function Login() {
             })
         })
     }
+
+    const getLoginUser = () => {
+        axios.post("/api/user/isLogin").then((response)=>{
+            if(response.data) {
+                sessionStorage.setItem("loginUser", response.data);
+                navigate("/myPage");
+            } else {
+
+            }
+        }).catch((error)=>{
+            console.log(error);
+        })
+    }
+
+    useEffect(()=>{
+        console.log(sessionStorage.getItem("loginUser"));
+        getLoginUser();
+    },[])
 
     return (
         <>
