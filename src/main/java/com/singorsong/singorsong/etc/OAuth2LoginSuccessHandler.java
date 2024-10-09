@@ -1,4 +1,4 @@
-package com.singorsong.singorsong.handler;
+package com.singorsong.singorsong.etc;
 
 import com.singorsong.singorsong.entity.CustomUserDetail;
 import com.singorsong.singorsong.entity.User;
@@ -9,7 +9,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
@@ -20,7 +19,6 @@ import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -68,12 +66,6 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
 
     protected void resultRedirectStrategy(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         SavedRequest savedRequest = requestCache.getRequest(request, response);
-
-        if(savedRequest != null) {
-            String targetUrl = savedRequest.getRedirectUrl();
-            redirectStrategy.sendRedirect(request, response, targetUrl);
-        } else {
-            redirectStrategy.sendRedirect(request, response, "/");
-        }
+        redirectStrategy.sendRedirect(request, response, "/");
     }
 }

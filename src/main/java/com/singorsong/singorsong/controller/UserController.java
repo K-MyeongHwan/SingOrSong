@@ -5,6 +5,7 @@ import com.singorsong.singorsong.entity.CustomUserDetail;
 import com.singorsong.singorsong.entity.Song;
 import com.singorsong.singorsong.entity.User;
 import com.singorsong.singorsong.service.CategoryService;
+import com.singorsong.singorsong.service.S3Service;
 import com.singorsong.singorsong.service.SongService;
 import com.singorsong.singorsong.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -24,17 +26,19 @@ import java.util.List;
 @RequestMapping("/api/user")
 public class UserController {
     private final UserService userService;
+    private final S3Service s3Service;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, S3Service s3Service) {
         this.userService = userService;
+        this.s3Service = s3Service;
     }
 
     @PostMapping("/isLogin")
-    public Boolean getIsLogin(HttpServletRequest request) {
+    public String getIsLogin(HttpServletRequest request) {
         HttpSession session = request.getSession();
 
         System.out.println(session.getAttribute("loginUser"));
-        return session.getAttribute("loginUser") != null;
+        return (session.getAttribute("loginUser") + "");
     }
 
     @Secured("ROLE_USER")
@@ -114,5 +118,23 @@ public class UserController {
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "entity not found");
         }
+    }
+
+    @PostMapping("/update/profileImg")
+    public String updateProfileImg(@RequestParam(value = "profileImage") MultipartFile profileImage, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        String profileImgUrl = "";
+        try {
+            User user = userService.getUserByUserId((Integer)session.getAttribute("loginUser"));
+
+            profileImgUrl = s3Service.uploadFile(profileImage);
+            System.out.println(profileImgUrl);
+
+            user.setProfileImageUrl(profileImgUrl);
+            userService.updateUser(user);
+        } catch(Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return profileImgUrl;
     }
 }

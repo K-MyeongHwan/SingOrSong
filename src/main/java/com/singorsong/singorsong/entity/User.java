@@ -30,11 +30,20 @@ public class User {
     private String nickName;
 
     @Column(name="profileImageUrl")
+    @Setter
     private String profileImageUrl;
+
+    @Column(name="userIntroduce")
+    @Setter
+    private String userIntroduce;
 
     @Column(name="userGender")
     @Setter
     private int userGender;
+
+    @Column(name="coinCount")
+    @Setter
+    private int coinCount;
 
     @ManyToOne
     @JsonIgnore

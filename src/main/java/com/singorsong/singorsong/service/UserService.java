@@ -55,6 +55,7 @@ public class UserService {
         user.setUserGender(updateUser.getUserGender());
         user.setNickName(updateUser.getNickName());
         user.setUserBirth(updateUser.getUserBirth());
+        user.setUserIntroduce(updateUser.getUserIntroduce());
 
         System.out.println(user.toString());
 

@@ -12,8 +12,6 @@ import axios from "axios";
 export const MainContext = createContext();
 
 function Main() {
-    const [isLogin, setIsLogin] = useState();
-
     const [image, setImage] = React.useState(sidebarImage);
     const [color, setColor] = React.useState("black");
     const [hasImage, setHasImage] = React.useState(true);
@@ -31,12 +29,6 @@ function Main() {
             var element = document.getElementById("bodyClick");
             element.parentNode.removeChild(element);
         }
-
-        axios.post("/api/user/isLogin").then((response)=>{
-            setIsLogin(response.data);
-        }).catch((error)=>{
-            console.log(error);
-        })
     }, [location]);
 
     //React
@@ -53,7 +45,6 @@ function Main() {
     };
 
     return (
-        <MainContext.Provider value={{isLogin, setIsLogin}}>
             <div className="wrapper">
                 <Sidebar color={color} image={hasImage ? image : ""} routes={routes}/>
                 <div className="main-panel" ref={mainPanel}>
@@ -69,7 +60,6 @@ function Main() {
                     </div>
                 </div>
             </div>
-        </MainContext.Provider>
     );
 }
 
