@@ -12,6 +12,8 @@ import software.amazon.awssdk.services.s3.model.GetUrlRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -22,11 +24,11 @@ public class S3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
-    public String uploadFile(MultipartFile multipartFile) {
+    public List<String> uploadFile(MultipartFile multipartFile, String type) {
 
         if(multipartFile.isEmpty()) {
             log.info("image is null");
-            return "";
+            return null;
         }
 
         String fileName = getFileName(multipartFile);
@@ -36,7 +38,7 @@ public class S3Service {
                     .bucket(bucketName)
                     .contentType(multipartFile.getContentType())
                     .contentLength(multipartFile.getSize())
-                    .key("profileImage/" + fileName)
+                    .key(type + fileName)
                     .build();
             RequestBody requestBody = RequestBody.fromBytes(multipartFile.getBytes());
             s3Client.putObject(putObjectRequest, requestBody);
@@ -46,10 +48,14 @@ public class S3Service {
         }
         GetUrlRequest getUrlRequest = GetUrlRequest.builder()
                 .bucket(bucketName)
-                .key("profileImage/" + fileName)
+                .key( type + fileName)
                 .build();
 
-        return s3Client.utilities().getUrl(getUrlRequest).toString();
+        List<String> result = new ArrayList<>();
+        result.add(0, multipartFile.getOriginalFilename());
+        result.add(1, s3Client.utilities().getUrl(getUrlRequest).toString());
+
+        return result;
     }
 
     public String getFileName(MultipartFile multipartFile) {

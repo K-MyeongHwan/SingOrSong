@@ -33,6 +33,11 @@ public class User {
     @Setter
     private String profileImageUrl;
 
+    @Column(name="profileImageOriName")
+    @Setter
+    private String profileImageOriName;
+
+
     @Column(name="userIntroduce")
     @Setter
     private String userIntroduce;

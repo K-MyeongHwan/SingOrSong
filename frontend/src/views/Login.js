@@ -42,7 +42,9 @@ function Login() {
     const getLoginUser = () => {
         axios.post("/api/user/isLogin").then((response)=>{
             if(response.data) {
-                sessionStorage.setItem("loginUser", response.data);
+                sessionStorage.setItem("loginUser", response.data.loginUser);
+                sessionStorage.setItem("loginUserRole", response.data.loginUserRole);
+
                 navigate("/myPage");
             } else {
 

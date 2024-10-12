@@ -46,4 +46,8 @@ public class SongService {
     public List<Song> findSongBySongName(String songName) {
         return songRepository.findSongBySongNameContains(songName);
     }
+
+    public void updateSong(Song song) {
+        songRepository.save(song);
+    }
 }

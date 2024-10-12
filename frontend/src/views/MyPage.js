@@ -64,9 +64,13 @@ function MyPage() {
     const [profileImage, setProfileImage] = useState({
         image_file: null,
         preview_Url: "https://singorsong-bucket.s3.ap-northeast-2.amazonaws.com/profileImage/default_1728486344829.png"
-    })
+    });
+    const [profileImageOriName, setProfileImageOriName] = useState("");
     const imgChangeHandler = (e) => {
         const selectedFile = e.target.files[0];
+        if (selectedFile) {
+            setProfileImageOriName(selectedFile.name);
+        }
 
         if (selectedFile) {
             const reader = new FileReader();
@@ -79,43 +83,6 @@ function MyPage() {
             }
 
             reader.readAsDataURL(selectedFile);
-        }
-    }
-
-    const fileUploadHandler = (e) => {
-        e.preventDefault();
-        const formData = new FormData();
-
-        if (profileImage.image_file) {
-            formData.append("profileImage", profileImage.image_file);
-            console.log(formData.get("profileImage"));
-
-            axios.post(`/api/user/update/profileImg`, formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                },
-                transformRequest: [
-                    function () {
-                        return formData;
-                    },
-                ],
-            }).then((response) => {
-                console.log(response.data);
-                setProfileImage({
-                    image_file: null,
-                    preview_Url: response.data
-                });
-            }).catch((error) => {
-                console.log(error);
-            });
-        } else {
-            Swal.fire({
-                title: "프로필 사진 업로드",
-                text: "프로필 사진이 선택되지 않았습니다. 사진을 선택해주세요.",
-                icon: "error"
-            }).then(() => {
-
-            })
         }
     }
 
@@ -142,8 +109,11 @@ function MyPage() {
 
                 setUser(response.data);
                 setNickName(response.data.nickName);
+                setUserIntroduce(response.data.userIntroduce);
                 setUserGenderText(userGenderText);
                 setUserBirthText(userBirthText);
+                setUserBirth(userBirthText);
+                setProfileImageOriName(response.data.profileImageOriName);
 
                 setUserEmailComp(
                     <Form.Group>
@@ -180,6 +150,7 @@ function MyPage() {
                     text: "미로그인 상태입니다. 로그인 상태를 확인해주세요.",
                     icon: "error"
                 }).then(() => {
+                    sessionStorage.clear();
                     navigate("/login");
                 })
             }
@@ -237,50 +208,116 @@ function MyPage() {
     }, []);
 
     useEffect(() => {
+        const updateRequest = (changeUser) => {
+
+            if (userGender == 0) {
+                changeUser.userGender = user.userGender;
+            }
+
+            console.log(changeUser);
+
+            axios.put("/api/user/update", changeUser).then((response) => {
+                Swal.fire({
+                    title: "유저 정보 수정",
+                    text: "유저 정보를 수정했습니다.",
+                    icon: "success"
+                }).then(() => {
+                    console.log("file : " + profileImageOriName != user.profileImageOriName);
+
+                    if (profileImageOriName != user.profileImageOriName) {
+                        const formData = new FormData();
+
+                        if (profileImage.image_file) {
+                            formData.append("profileImage", profileImage.image_file);
+                            console.log(formData.get("profileImage"));
+
+                            axios.post(`/api/user/update/profileImg`, formData, {
+                                headers: {
+                                    "Content-Type": "multipart/form-data",
+                                },
+                                transformRequest: [
+                                    function () {
+                                        return formData;
+                                    },
+                                ],
+                            }).then((response) => {
+                                console.log(response.data);
+                                setProfileImage({
+                                    image_file: null,
+                                    preview_Url: response.data
+                                });
+                                Swal.fire({
+                                    title: "프로필 사진 업로드",
+                                    text: "프로필 사진이 성공적으로 업로드 되었습니다.",
+                                    icon: "success"
+                                }).then(() => {
+                                    window.location.reload();
+                                })
+                            }).catch((error) => {
+                                console.log(error);
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "프로필 사진 업로드",
+                                text: "프로필 사진이 선택되지 않았습니다. 사진을 선택해주세요.",
+                                icon: "error"
+                            }).then(() => {
+
+                            })
+                        }
+                    } else {
+                        window.location.reload();
+                    }
+                })
+            }).catch((error) => {
+                console.log(error);
+                Swal.fire({
+                    title: "유저 정보 수정",
+                    text: "정보 수정 중 오류가 발생했습니다. 다시 한 번 시도해주세요.",
+                    icon: "error"
+                }).then(() => {
+
+                })
+            });
+
+        }
+
         const updateHandler = () => {
             const email = userEmail + '@' + userEmailPlat;
             const url = `/api/user/register/checkEmail/${email}`;
-            const user = {
+            const changedUser = {
                 userEmail: email,
                 nickName: nickName,
                 userGender: userGender,
                 userBirth: userBirth,
                 userIntroduce: userIntroduce
             }
+            console.log(changedUser);
+            if (!userEmail || !userEmailPlat) {
+                changedUser.userEmail = user.userEmail;
+            }
 
-            axios.get(url).then((response) => {
-                console.log(response.data);
-                if (response.data) {
-                    axios.put("/api/user/update", user).then((response) => {
+            if (changedUser.userEmail === user.userEmail) {
+                updateRequest(changedUser);
+                console.log(changedUser);
+            } else {
+                axios.get(url).then((response) => {
+                    console.log(response.data);
+                    if (response.data) {
+                        updateRequest(changedUser);
+                    } else {
                         Swal.fire({
                             title: "유저 정보 수정",
-                            text: "유저 정보를 수정했습니다.",
-                            icon: "success"
-                        }).then(() => {
-                            window.location.reload();
-                        })
-                    }).catch((error) => {
-                        console.log(error);
-                        Swal.fire({
-                            title: "유저 정보 수정",
-                            text: "정보 수정 중 오류가 발생했습니다. 다시 한 번 시도해주세요.",
+                            text: "중복되는 이메일이 있습니다. 다른 이메일로 시도해주세요.",
                             icon: "error"
                         }).then(() => {
 
                         })
-                    });
-                } else {
-                    Swal.fire({
-                        title: "유저 정보 수정",
-                        text: "중복되는 이메일이 있습니다. 다른 이메일로 시도해주세요.",
-                        icon: "error"
-                    }).then(() => {
-
-                    })
-                }
-            }).catch((error) => {
-                console.log(error);
-            })
+                    }
+                }).catch((error) => {
+                    console.log(error);
+                })
+            }
         }
 
         if (isUpdateOn) {
@@ -412,7 +449,7 @@ function MyPage() {
                 </Button>
             );
         }
-    }, [isUpdateOn, nickName, userBirth, userEmail, userEmailPlat, userGender, userIntroduce])
+    }, [isUpdateOn, nickName, userBirth, userEmail, userEmailPlat, userGender, userIntroduce, user, profileImageOriName, profileImage])
 
     return (
         <>
@@ -503,10 +540,6 @@ function MyPage() {
                                             src={profileImage.preview_Url}
                                         ></img>
                                     </label>
-                                    <button hidden={!isUpdateOn} onClick={(e) => {
-                                        fileUploadHandler(e)
-                                    }}>upload
-                                    </button>
                                     <h5 className="title">{user.userName}</h5>
                                     <p className="description">{user.nickName}</p>
                                 </div>
@@ -520,7 +553,6 @@ function MyPage() {
                                 <textarea hidden={!isUpdateOn} onChange={(e) => {
                                     setUserIntroduce(e.target.value)
                                 }}>
-
                                 </textarea>
                             </Card.Body>
                             <hr></hr>

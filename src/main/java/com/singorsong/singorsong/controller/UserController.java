@@ -20,7 +20,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/user")
@@ -34,11 +37,20 @@ public class UserController {
     }
 
     @PostMapping("/isLogin")
-    public String getIsLogin(HttpServletRequest request) {
+    public Map<String, String> getIsLogin(HttpServletRequest request) {
         HttpSession session = request.getSession();
+        Map<String, String> result = new HashMap<>();
+        try {
+            System.out.println(session.getAttribute("loginUser"));
+            System.out.println(session.getAttribute("loginUserRole"));
 
-        System.out.println(session.getAttribute("loginUser"));
-        return (session.getAttribute("loginUser") + "");
+            result.put("loginUser", session.getAttribute("loginUser").toString());
+            result.put("loginUserRole", session.getAttribute("loginUserRole").toString());
+        } catch(NullPointerException e) {
+            result = null;
+        }
+
+        return result;
     }
 
     @Secured("ROLE_USER")
@@ -126,10 +138,15 @@ public class UserController {
         String profileImgUrl = "";
         try {
             User user = userService.getUserByUserId((Integer)session.getAttribute("loginUser"));
+            String profileImgOriName = "";
 
-            profileImgUrl = s3Service.uploadFile(profileImage);
+            List<String> result = s3Service.uploadFile(profileImage, "profileImage/" );
+            profileImgOriName = result.get(0);
+            profileImgUrl = result.get(1);
+
             System.out.println(profileImgUrl);
 
+            user.setProfileImageOriName(profileImgOriName);
             user.setProfileImageUrl(profileImgUrl);
             userService.updateUser(user);
         } catch(Exception e) {
