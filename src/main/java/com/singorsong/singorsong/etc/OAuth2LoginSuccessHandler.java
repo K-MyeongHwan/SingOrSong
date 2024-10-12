@@ -48,6 +48,7 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
 
             //session 저장
             session.setAttribute("loginUser", user.getUserId());
+            session.setAttribute("loginUserRole", authentication.getAuthorities());
             session.setMaxInactiveInterval(60 * 30);
         } else if (type.equals("DefaultOAuth2User")) {
             DefaultOAuth2User oauth2User = (DefaultOAuth2User) authentication.getPrincipal();
@@ -58,6 +59,7 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
 
             //session 저장
             session.setAttribute("loginUser", user.getUserId());
+            session.setAttribute("loginUserRole", authentication.getAuthorities());
             session.setMaxInactiveInterval(60 * 30);
         }
 

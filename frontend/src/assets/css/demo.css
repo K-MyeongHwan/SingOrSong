@@ -1,3 +1,22 @@
+.mySongSound {
+  padding : 15px;
+  border: 1px solid #E2E2E2;
+  margin-bottom : 10px;
+}
+
+.mySongImageText {
+  text-align: center;
+  margin-bottom : 10px;
+}
+
+.mySongImage {
+  width: 200px;
+  height: 200px;
+  border: 3px solid #E2E2E2;
+  position: relative;
+  margin-bottom: 15px;
+}
+
 .myCoinCount {
   padding : 15px;
 }

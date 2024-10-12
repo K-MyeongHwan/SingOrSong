@@ -33,6 +33,22 @@ public class Song {
     @JoinColumn(name="singerNum")
     private Singer singer;
 
+    @Column(name="songImageUrl")
+    @Setter
+    private String songImageUrl;
+
+    @Column(name="songImageOriName")
+    @Setter
+    private String songImageOriName;
+
+    @Column(name="songSoundUrl")
+    @Setter
+    private String songSoundUrl;
+
+    @Column(name="songSoundOriName")
+    @Setter
+    private String songSoundOriName;
+
     @Builder
     public Song(int songNum, String songName, int replayCount, Date songDate, Category category, Singer singer) {
         this.songNum = songNum;
