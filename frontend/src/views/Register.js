@@ -11,7 +11,6 @@ import {
 } from "react-bootstrap";
 import {FormControl, FormControlLabel, InputLabel, Radio, RadioGroup} from "@mui/material";
 import {DatePicker} from "rsuite";
-import 'rsuite/DatePicker/styles/index.css';
 import Select from "react-select";
 import axios from "axios";
 import Swal from "sweetalert2";

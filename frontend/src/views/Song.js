@@ -1,40 +1,28 @@
 import React, {useEffect, useState} from "react";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {Button, Card, Col, Container, Form, Row} from "react-bootstrap";
 import axios from "axios";
 import AudioPlayer from "react-h5-audio-player";
 import 'react-h5-audio-player/lib/styles.css';
 import Swal from "sweetalert2";
 
-//base64 인코딩을 해제하기 위한 함수
-function base64ToArrayBuffer(base64) {
-    //인코딩 해제해 바이너리 스트링으로 받기
-    const binary_string = window.atob(base64);
-    //해당 길이가 필요해 변수에 적재
-    const len = binary_string.length;
-    //??이부분 ~ 밑에 루프가 이해가 잘 되지 않는다.
-    const bytes = new Uint8Array(len);
-
-    for (var i = 0; i < len; i++) {
-        bytes[i] = binary_string.charCodeAt(i);
-    }
-
-    return bytes.buffer;
-}
-
 function Song() {
+    const navigate = useNavigate();
+    let isPlayed = false;
+
     const [songNum, setSongNum] = useState(useParams().songNum);
+    const [singerNum, setSingerNum] = useState("");
     const [song, setSong] = useState({});
-    const [replayCount, setReplayCount] = useState(song.replayCount);
-    const [audioSrc, setAudioSrc] = useState('');
+    const [replayCount, setReplayCount] = useState();
+    const [categoryName, setCategoryName] = useState("");
     const [isAdmin, setIsAdmin] = useState(false);
     const [isUpdateOn, setIsUpdateOn] = useState(false);
     const [updateButton, setUpdateButton] = useState(
 
     );
 
-
     //soundUpload
+    const [audioPlayer, setAudioPlayer] = useState(<></>);
     const [songSoundUrl, setSongSoundUrl] = useState("");
     const [songSoundOriName, setSongSoundOriName] = useState("");
     const [songSound, setSongSound] = useState({
@@ -112,16 +100,73 @@ function Song() {
         }
     }
 
-    const playAudio = () => {
-        const url = `/api/song/play/${song.songNum}`;
-        axios.get(url).then((response) => {
-            setReplayCount(1 + replayCount);
-        }).catch((error) => {
-            console.log(error);
-        });
+    //Like
+    const [likeCount, setLikeCount] = useState(0);
+    const [likeIconClassName, setLikeIconClassName] = useState("icon heart");
+    const [likeActive, setLikeActive] = useState(true);
+    const [likeImage, setLikeImage] = useState("https://cdn-icons-png.flaticon.com/512/812/812327.png");
+
+    const likeHandler = () => {
+        console.log(likeActive);
+
+        if (!sessionStorage.getItem("loginUserRole")) {
+            Swal.fire({
+                title: "노래 좋아요",
+                text: "좋아요를 표시하려면, 로그인을 해주세요.",
+                icon: "error"
+            }).then(() => {
+                navigate("/login")
+            })
+        } else {
+            if (likeActive) {
+                //눌러져있음
+                setLikeIconClassName("icon heart active");
+                setLikeImage("https://cdn-icons-png.flaticon.com/512/803/803087.png");
+
+                axios.post(`/api/song/like/insert/${songNum}`).then((response) => {
+                    setLikeCount(likeCount + 1);
+                    Swal.fire({
+                        title : "노래 좋아요",
+                        text : "좋아요를 눌렀습니다!",
+                        icon : "success"
+                    })
+                }).catch((error) => {
+                    console.log(error);
+                })
+            } else {
+                //안눌러져있음
+                setLikeIconClassName("icon heart");
+                setLikeImage("https://cdn-icons-png.flaticon.com/512/812/812327.png");
+
+                axios.post(`/api/song/like/delete/${songNum}`).then((response) => {
+                    setLikeCount(likeCount - 1);
+                    Swal.fire({
+                        title : "노래 좋아요",
+                        text : "좋아요를 취소했습니다.",
+                        icon : "warning"
+                    })
+                }).catch((error) => {
+                    console.log(error);
+                })
+            }
+        }
+    }
+
+    const playerHandler = (replayCount) => {
+        if (isPlayed) {
+            console.log("already");
+        } else {
+            axios.post(`/api/song/play/${songNum}`).then((response) => {
+                setReplayCount(replayCount + 1);
+                isPlayed = true;
+            }).catch((error) => {
+                console.log(error);
+            })
+        }
     }
 
     useEffect(() => {
+
         if (sessionStorage.getItem("loginUserRole") === "[ROLE_ADMIN]") {
             console.log("isAdmin");
             setIsAdmin(true);
@@ -135,7 +180,8 @@ function Song() {
             setSong(response.data);
             setReplayCount(response.data.replayCount);
             setSongImageOriName(response.data.songImageOriName);
-
+            setCategoryName(response.data.category.categoryName);
+            
             if (response.data.songImageUrl) {
                 setSongImageUrl(response.data.songImageUrl);
                 setSongImage({
@@ -150,9 +196,35 @@ function Song() {
 
             setSongSoundUrl(response.data.songSoundUrl);
 
+            setAudioPlayer(
+                <AudioPlayer
+                    src={response.data.songSoundUrl}
+                    onPlay={(e) => {
+                        playerHandler(response.data.replayCount);
+                    }}
+                    autoPlay={false}
+                />
+            );
         }).catch((error) => {
             console.log(error);
         });
+
+        axios.post(`/api/song/like/${songNum}`).then((response) => {
+            console.log(response.data);
+            if (response.data) {
+                setLikeIconClassName("icon heart active");
+                setLikeImage("https://cdn-icons-png.flaticon.com/512/803/803087.png");
+            }
+        }).catch((error) => {
+            console.log(error);
+        });
+
+        axios.get(`/api/song/like/${songNum}`).then((response)=>{
+            console.log(response.data);
+            setLikeCount(response.data);
+        }).catch((error)=>{
+            console.log(error);
+        })
     }, []);
 
     useEffect(() => {
@@ -294,7 +366,9 @@ function Song() {
                                         <Col className="pl-1" md="6">
                                             <Form.Group>
                                                 <small>가수 이름</small>
-                                                <h3>{song.singerName}</h3>
+                                                <h3 onClick={(e) => {
+                                                    navigate("/singer/" + song.singerName);
+                                                }}>{song.singerName}</h3>
                                             </Form.Group>
                                         </Col>
                                         <Col className="pl-1" md="6">
@@ -305,9 +379,10 @@ function Song() {
                                         </Col>
                                     </Row>
                                     <Row>
-                                        <Col md="12">
+                                        <Col className="pl-1" md="6">
                                             <Form.Group>
-
+                                                <small>장르</small>
+                                                <h3>{categoryName}</h3>
                                             </Form.Group>
                                         </Col>
                                         <Col className="pl-1" md="6">
@@ -319,11 +394,7 @@ function Song() {
                                         <h3>음원 재생</h3>
                                         <br/>
                                         <hr/>
-                                        <AudioPlayer
-                                            preload="none"
-                                            autoPlay={false}
-                                            src={songSoundUrl}
-                                        />
+                                        {audioPlayer}
                                     </Row>
                                 </Form>
                             </Card.Body>
@@ -372,10 +443,19 @@ function Song() {
                                             src={songImage.preview_Url}
                                         ></img>
                                     </label>
-                                    <h5 className="title"></h5>
-                                    <p className="description"></p>
-                                    <p className="description text-center">
-                                    </p>
+                                    <div className="myLikeContainer">
+                                        좋아요 : {likeCount}
+                                        <div className="right_area">
+                                            <a className={likeIconClassName} onClick={(e) => {
+                                                setLikeActive(!likeActive);
+                                                likeHandler(e);
+                                            }
+                                            }>
+                                                <img src={likeImage}
+                                                     alt="찜하기"/>
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
                                 {updateButton}
                             </Card.Body>

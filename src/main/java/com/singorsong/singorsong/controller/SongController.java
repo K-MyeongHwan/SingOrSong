@@ -1,14 +1,18 @@
 package com.singorsong.singorsong.controller;
 
 import com.singorsong.singorsong.entity.Category;
+import com.singorsong.singorsong.entity.LikeSong;
 import com.singorsong.singorsong.entity.Song;
 import com.singorsong.singorsong.entity.User;
 import com.singorsong.singorsong.service.FileService;
+import com.singorsong.singorsong.service.LikeSongService;
 import com.singorsong.singorsong.service.S3Service;
 import com.singorsong.singorsong.service.SongService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -20,13 +24,15 @@ import java.util.List;
 @RequestMapping("/api/song")
 public class SongController {
     private final SongService songService;
+    private final LikeSongService likeSongService;
     private final FileService fileService;
     private final S3Service s3Service;
 
-    public SongController(SongService songService, FileService fileService, S3Service s3Service) {
+    public SongController(SongService songService, FileService fileService, S3Service s3Service, LikeSongService likeSongService) {
         this.songService = songService;
         this.fileService = fileService;
         this.s3Service = s3Service;
+        this.likeSongService = likeSongService;
     }
 
     @GetMapping("/{songNum}")
@@ -51,15 +57,7 @@ public class SongController {
         }
     }
 
-    @ResponseBody
-    @PostMapping("/audio")
-    public LinkedHashMap getAudio() throws Exception {
-        //위에 스트링으로 만들어준 객체를 답변을 위한 해쉬맵 객체에 넣어
-        //프론트로 보내기 위해 적재
-        return fileService.playAudio();
-    }
-
-    @GetMapping("/play/{songNum}")
+    @PostMapping("/play/{songNum}")
     public void updateSongReplayCount(@PathVariable("songNum") Long songNum) {
         try {
             songService.updateReplayCount(songNum.intValue());
@@ -119,5 +117,42 @@ public class SongController {
             System.out.println(e.getMessage());
         }
         return songSoundUrl;
+    }
+
+    @PostMapping("/like/insert/{songNum}")
+    @Secured("ROLE_USER")
+    public void insertLikeSong(@PathVariable("songNum") int songNum, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        int userId = (Integer) session.getAttribute("loginUser");
+
+        likeSongService.insertLikeSong(userId, songNum);
+    }
+
+    @PostMapping("/like/delete/{songNum}")
+    @Secured("ROLE_USER")
+    public void deleteLikeSong(@PathVariable("songNum") int songNum, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        int userId = (Integer) session.getAttribute("loginUser");
+
+        likeSongService.deleteLikeSong(userId, songNum);
+    }
+
+    @PostMapping("/like/{songNum}")
+    @Secured("ROLE_USER")
+    public LikeSong getLikeSong(@PathVariable("songNum") int songNum, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        if(session.getAttribute("loginUser") == null) {
+            return null;
+        }
+
+        int userId = (Integer) session.getAttribute("loginUser");
+
+
+        return likeSongService.findByUserIdAndSongNum(userId, songNum);
+    }
+
+    @GetMapping("/like/{songNum}")
+    public Integer getLikeSongLength(@PathVariable("songNum") int songNum) {
+        return likeSongService.findBySongNum(songNum).size();
     }
 }

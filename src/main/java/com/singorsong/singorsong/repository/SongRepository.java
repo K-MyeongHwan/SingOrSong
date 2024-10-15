@@ -12,4 +12,6 @@ public interface SongRepository extends JpaRepository<Song, Integer> {
     public Song findSongBySongNum(Integer songNum);
 
     public List<Song> findSongBySongNameContains(String songName);
+
+    public List<Song> findSongBySingerSingerNum(Integer singerNum);
 }

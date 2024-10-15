@@ -21,12 +21,28 @@ function Home() {
     let columns = [
         {
             field: "songNum",
-            headerName: "곡 번호"
+            headerName: "곡 번호",
+            width : 100
+        },
+        {
+            field: "songAlbum",
+            headerName: "노래 앨범",
+            width : 80,
+            renderCell : (params) => {
+                return (
+                    <div>
+                        <img
+                            className="songListAlbum border-gray"
+                            src={params.row.songImageUrl}
+                        />
+                    </div>
+                )
+            }
         },
         {
             field: "songName",
             headerName: "곡 이름",
-            width: 300
+            width: 200
         },
         {
             field: "singerName",
@@ -36,7 +52,7 @@ function Home() {
         {
             field: "replayCount",
             headerName: "재생 횟수",
-            width: 50
+            width: 100
         }
     ]
 
