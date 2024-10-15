@@ -1,13 +1,9 @@
 package com.singorsong.singorsong.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.Date;
 
 @Entity(name="Singer")
 @Getter
@@ -21,6 +17,21 @@ public class Singer {
 
     @Column(name="singerName")
     private String singerName;
+
+    @Column(name="debutDate")
+    private Date debutDate;
+
+    @ManyToOne
+    @JoinColumn(name="categoryNum")
+    private Category category;
+
+    @Column(name="singerImageUrl")
+    @Setter
+    private String singerImageUrl;
+
+    @Column(name="singerImageOriName")
+    @Setter
+    private String singerImageOriName;
 
     @Builder
     public Singer(int singerNum, String singerName) {

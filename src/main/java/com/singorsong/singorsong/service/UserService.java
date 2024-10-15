@@ -3,19 +3,11 @@ package com.singorsong.singorsong.service;
 import com.singorsong.singorsong.entity.*;
 import com.singorsong.singorsong.repository.PlatformRepository;
 import com.singorsong.singorsong.repository.RoleRepository;
-import com.singorsong.singorsong.repository.SongRepository;
 import com.singorsong.singorsong.repository.UserRepository;
-import jakarta.transaction.Transactional;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class UserService {

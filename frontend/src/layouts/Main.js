@@ -8,6 +8,7 @@ import sidebarImage from "../assets/img/sidebarImage.png";
 import Song from "../views/Song";
 import Register from "../views/Register";
 import axios from "axios";
+import Singer from "../views/Singer";
 
 export const MainContext = createContext();
 
@@ -52,6 +53,7 @@ function Main() {
                         <Routes>
                             {getRoutes(routes)}
                             <Route path="song/:songNum" element={<Song/>}/>
+                            <Route path="singer/:singerName" element={<Singer/>}/>
                             <Route path="register" element={<Register/>}/>
                         </Routes>
                     </div>

@@ -50,4 +50,8 @@ public class SongService {
     public void updateSong(Song song) {
         songRepository.save(song);
     }
+
+    public List<Song> findSongBySingerNum(int singerNum) {
+        return songRepository.findSongBySingerSingerNum(singerNum);
+    }
 }
