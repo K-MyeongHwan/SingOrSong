@@ -26,6 +26,7 @@ public class S3Service {
 
     public List<String> uploadFile(MultipartFile multipartFile, String type) {
 
+
         if(multipartFile.isEmpty()) {
             log.info("image is null");
             return null;
@@ -60,6 +61,9 @@ public class S3Service {
 
     public String getFileName(MultipartFile multipartFile) {
         if(multipartFile.isEmpty()) return "";
+
+        System.out.println(CommonUtils.buildFileName(multipartFile.getOriginalFilename()));
+
         return CommonUtils.buildFileName(multipartFile.getOriginalFilename());
     }
 }

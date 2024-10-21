@@ -22,13 +22,13 @@ function Home() {
         {
             field: "songNum",
             headerName: "곡 번호",
-            width : 100
+            width: 100
         },
         {
             field: "songAlbum",
             headerName: "노래 앨범",
-            width : 80,
-            renderCell : (params) => {
+            width: 80,
+            renderCell: (params) => {
                 return (
                     <div>
                         <img
@@ -42,12 +42,30 @@ function Home() {
         {
             field: "songName",
             headerName: "곡 이름",
-            width: 200
+            width: 200,
+            renderCell: (params) => {
+                return (
+                    <div onClick={(e)=>{
+                        navigate(`/song/${params.id}`);
+                    }}>
+                        {params.row.songName}
+                    </div>
+                )
+            }
         },
         {
             field: "singerName",
             headerName: "가수",
-            width: 200
+            width: 200,
+            renderCell: (params) => {
+                return (
+                    <div onClick={(e)=>{
+                        navigate(`/singer/${params.row.singerName}`);
+                    }}>
+                        {params.row.singerName}
+                    </div>
+                )
+            }
         },
         {
             field: "replayCount",
@@ -93,7 +111,7 @@ function Home() {
         if (songName.length !== 0) {
             const url = `/api/song/search/${songName}`;
             axios.get(url).then((response) => {
-                response.data.map((song)=>{
+                response.data.map((song) => {
                     song.id = song.songNum;
                     song.singerName = song.singer.singerName
                 })
@@ -170,10 +188,10 @@ function Home() {
 
             case "songNum" : {
                 changedSongNum(songNum);
-                if(songList.length === 0) {
+                if (songList.length === 0) {
                     Swal.fire({
-                        title : "검색 오류",
-                        text : "해당 곡 번호에 선택되는 곡이 없습니다."
+                        title: "검색 오류",
+                        text: "해당 곡 번호에 선택되는 곡이 없습니다."
                     })
                 }
                 break;
@@ -181,10 +199,10 @@ function Home() {
 
             case "songName" : {
                 changedSongName(songName);
-                if(songList.length === 0) {
+                if (songList.length === 0) {
                     Swal.fire({
-                        title : "검색 오류",
-                        text : "해당 문자가 들어간 곡이 없습니다."
+                        title: "검색 오류",
+                        text: "해당 문자가 들어간 곡이 없습니다."
                     })
                 }
                 break;
@@ -250,7 +268,7 @@ function Home() {
                         <h2>곡 검색</h2>
                         <hr/>
                         <Row>
-                           <Col className="pl-1" md="6">
+                            <Col className="pl-1" md="6">
                                 <Form.Group>
                                     {searchTypeComponent}
                                 </Form.Group>
@@ -279,9 +297,6 @@ function Home() {
                             },
                         }}
                         pageSizeOptions={[5, 10]}
-                        onCellDoubleClick={(params, event) => {
-                            navigate(`/song/${params.id}`);
-                        }}
                     />
                 </Card.Body>
             </Card>

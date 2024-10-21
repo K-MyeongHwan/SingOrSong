@@ -7,6 +7,7 @@ import java.util.Date;
 
 @Entity(name="Singer")
 @Getter
+@Setter
 @ToString
 @NoArgsConstructor
 public class Singer {

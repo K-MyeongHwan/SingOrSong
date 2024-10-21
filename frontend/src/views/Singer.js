@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Card, Col, Container, Form, Row} from "react-bootstrap";
+import {Button, Card, Col, Container, Form, Row} from "react-bootstrap";
 import 'react-h5-audio-player/lib/styles.css';
 import {useNavigate, useParams} from "react-router-dom";
 import axios from "axios";
@@ -9,6 +9,16 @@ import Swal from "sweetalert2";
 function Singer() {
     const [isAdmin, setIsAdmin] = useState(false);
     const navigate = useNavigate();
+    const [isUpdateOn, setIsUpdateOn] = useState(false);
+    const [singerImageUrl, setSingerImageUrl] = useState("");
+    const [singerImageOriName, setSingerImageOriName] = useState("");
+    const [singerImage, setSingerImage] = useState({
+        image_file: null,
+        preview_Url: null
+    });
+    const [updateButton, setUpdateButton] = useState(
+
+    );
 
     const [singerName, setSingerName] = useState(useParams().singerName);
     const [singerDebutDate, setSingerDebutDate] = useState("");
@@ -20,13 +30,13 @@ function Singer() {
         {
             field: "songNum",
             headerName: "곡 번호",
-            width : 100
+            width: 100
         },
         {
             field: "songAlbum",
             headerName: "노래 앨범",
-            width : 80,
-            renderCell : (params) => {
+            width: 80,
+            renderCell: (params) => {
                 return (
                     <div>
                         <img
@@ -40,7 +50,16 @@ function Singer() {
         {
             field: "songName",
             headerName: "곡 이름",
-            width: 200
+            width: 200,
+            renderCell: (params) => {
+                return (
+                    <div onClick={(e)=>{
+                        navigate(`/song/${params.id}`);
+                    }}>
+                        {params.row.songName}
+                    </div>
+                )
+            }
         },
         {
             field: "singerName",
@@ -53,6 +72,26 @@ function Singer() {
             width: 100
         }
     ]
+
+
+    const imgChangeHandler = (e) => {
+        const selectedFile = e.target.files[0];
+        if (selectedFile) {
+            setSingerImageOriName(selectedFile.name);
+        }
+
+        if (selectedFile) {
+            const reader = new FileReader();
+
+            reader.onload = (e) => {
+                setSingerImage({
+                    image_file: selectedFile,
+                    preview_Url: e.target.result
+                });
+            }
+            reader.readAsDataURL(selectedFile);
+        }
+    }
 
     const [likeCount, setLikeCount] = useState(0);
     const [likeIconClassName, setLikeIconClassName] = useState("icon heart");
@@ -79,9 +118,9 @@ function Singer() {
                 axios.post(`/api/singer/fan/insert/${singer.singerNum}`).then((response) => {
                     setFanCount(fanCount + 1);
                     Swal.fire({
-                        title : "가수 열혈팬",
-                        text : singer.singerName + "님의 열혈팬이 되었습니다!",
-                        icon : "success"
+                        title: "가수 열혈팬",
+                        text: singer.singerName + "님의 열혈팬이 되었습니다!",
+                        icon: "success"
                     })
                 }).catch((error) => {
                     console.log(error);
@@ -94,9 +133,9 @@ function Singer() {
                 axios.post(`/api/singer/fan/delete/${singer.singerNum}`).then((response) => {
                     setFanCount(fanCount - 1);
                     Swal.fire({
-                        title : "가수 열혈팬",
-                        text : singer.singerName + "님의 열혈팬을 취소했습니다.",
-                        icon : "warning"
+                        title: "가수 열혈팬",
+                        text: singer.singerName + "님의 열혈팬을 취소했습니다.",
+                        icon: "warning"
                     })
                 }).catch((error) => {
                     console.log(error);
@@ -118,8 +157,21 @@ function Singer() {
             setSinger(response.data);
             setSingerDebutDate((response.data.debutDate + "").split('T')[0]);
             setCategoryName(response.data.category.categoryName);
+            setSingerImageOriName(response.data.singerImageOriName);
 
-            axios.post(`/api/singer/songList/${response.data.singerNum}`).then((response)=>{
+            if (response.data.singerImageUrl) {
+                setSingerImageUrl(response.data.singerImageUrl);
+                setSingerImage({
+                    preview_Url: response.data.singerImageUrl
+                });
+            } else {
+                setSingerImageUrl("https://singorsong-bucket.s3.ap-northeast-2.amazonaws.com/singerImage/default.jpg");
+                setSingerImage({
+                    preview_Url: "https://singorsong-bucket.s3.ap-northeast-2.amazonaws.com/singerImage/default.jpg"
+                })
+            }
+
+            axios.post(`/api/singer/songList/${response.data.singerNum}`).then((response) => {
                 console.log(response.data);
                 response.data.map((song) => {
                     song.id = song.songNum;
@@ -127,13 +179,13 @@ function Singer() {
                 });
 
                 setSongList(response.data);
-            }).catch((error)=>{
+            }).catch((error) => {
                 console.log(error);
             })
 
-            axios.get(`/api/singer/fan/${response.data.singerNum}`).then((response)=>{
+            axios.get(`/api/singer/fan/${response.data.singerNum}`).then((response) => {
                 setFanCount(response.data);
-            }).catch((error)=>{
+            }).catch((error) => {
                 console.log(error);
             })
 
@@ -151,6 +203,116 @@ function Singer() {
         });
     }, []);
 
+
+    useEffect(() => {
+        if (isAdmin) {
+            setUpdateButton(
+                <Button
+                    className="btn-fill pull-right"
+                    hidden={!isAdmin}
+                    onClick={(e) => {
+                        setIsUpdateOn(!isUpdateOn);
+                    }}
+                >
+                    노래 사진 변경
+                </Button>
+            )
+        } else {
+
+        }
+    }, [isAdmin])
+
+    useEffect(() => {
+        const fileUploadHandler = (e) => {
+            e.preventDefault();
+            console.log("file : " + singerImageOriName != singer.singerImageOriName);
+            if (singerImageOriName != singer.singerImageOriName) {
+                const formData = new FormData();
+
+                if (singerImage.image_file) {
+                    formData.append("singerImage", singerImage.image_file);
+                    console.log(formData.get("singerImage"));
+
+                    axios.post(`/api/singer/update/singerImg/${singer.singerNum}`, formData, {
+                        headers: {
+                            "Content-Type": "multipart/form-data",
+                        },
+                        transformRequest: [
+                            function () {
+                                return formData;
+                            },
+                        ],
+                    }).then((response) => {
+                        console.log(response.data);
+                        setSingerImage({
+                            image_file: null,
+                            preview_Url: response.data
+                        });
+                        Swal.fire({
+                            title: "가수 사진 업로드",
+                            text: "가수 사진이 성공적으로 업로드 되었습니다.",
+                            icon: "success"
+                        }).then(() => {
+                            window.location.reload();
+                        })
+                    }).catch((error) => {
+                        console.log(error);
+                    });
+
+                }
+            } else {
+                Swal.fire({
+                    title: "가수 사진 업로드",
+                    text: "가수 사진이 선택되지 않았습니다. 사진을 선택해주세요.",
+                    icon: "error"
+                }).then(() => {
+
+                })
+            }
+        }
+
+        if (isUpdateOn) {
+            setUpdateButton(
+                <>
+                    <Button
+                        className="myCancelButton"
+                        onClick={() => {
+                            setIsUpdateOn(false);
+                            setSingerImage({
+                                image_file: null,
+                                preview_Url: singerImageUrl
+                            })
+                        }}
+                    >
+                        취소
+                    </Button>
+                    &nbsp;&nbsp;
+                    <Button
+                        className="mySaveButton"
+                        onClick={(e) => {
+                            fileUploadHandler(e);
+                        }}
+                    >
+                        저장
+                    </Button>
+                </>
+            )
+        } else {
+            setUpdateButton(
+                <Button
+                    className="btn-fill pull-right"
+                    hidden={!isAdmin}
+                    onClick={(e) => {
+                        setIsUpdateOn(!isUpdateOn);
+                    }}
+                >
+                    노래 사진 변경
+                </Button>
+            )
+        }
+    }, [isUpdateOn, singer, singerImageUrl, singerImageOriName, singerImage]);
+
+
     return (
         <>
             <Container fluid>
@@ -159,15 +321,28 @@ function Singer() {
                         <Card.Header>
                             <Card.Title className="myTitle">가수 정보</Card.Title>
                             <div className="mySingerImage">
+                                <input type={"file"} id={"profileImageInput"} hidden={true} onChange={(e) => {
+                                    imgChangeHandler(e)
+                                }}/>
                                 <img
-                                    src={"https://singorsong-bucket.s3.ap-northeast-2.amazonaws.com/singerImage/eill.png"}
-                                    alt={"mySingerImage"}
-                                />
+                                    hidden={isUpdateOn}
+                                    alt="..."
+                                    src={singerImage.preview_Url}
+                                ></img>
+                                <label htmlFor={"profileImageInput"} hidden={!isUpdateOn}>
+                                    <img
+                                        alt="..."
+                                        src={singerImage.preview_Url}
+                                    ></img>
+                                </label>
                             </div>
                             <Form>
                                 <Row className="mySingerProfile">
                                     <div className="myLikeContainer">
                                         {singer.singerName} 님의 열혈팬 : {fanCount}
+                                    </div>
+                                    <div className="myLikeContainer">
+                                        {updateButton}
                                     </div>
                                     <div className="myLikeContainer">
                                         <div className="right_area">
@@ -177,7 +352,7 @@ function Singer() {
                                             }
                                             }>
                                                 <img src={likeImage}
-                                                     alt="찜하기"/>
+                                                />
                                             </a>
                                         </div>
                                     </div>

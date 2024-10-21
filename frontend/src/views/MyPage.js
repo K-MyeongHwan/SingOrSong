@@ -17,9 +17,16 @@ import Swal from "sweetalert2";
 import {useNavigate} from "react-router-dom";
 import {FormControl, FormControlLabel, InputLabel, Radio, RadioGroup, Switch} from "@mui/material";
 import Select from "react-select";
+import {DataGrid} from "@mui/x-data-grid";
+import AudioPlayer from "react-h5-audio-player";
+import Modal from "react-modal";
 
 function MyPage() {
     const navigate = useNavigate();
+    const [isModalOpen, setIsModalOpen] = useState({
+        isOpen: false,
+        selectedRecordUrl: null
+    });
     const addressList = [
         {
             label: "naver.com",
@@ -34,6 +41,104 @@ function MyPage() {
             value: "daum.net"
         }
     ];
+    let columns = [
+        {
+            field: "recordId",
+            headerName: "커버 번호",
+            width: 150
+        },
+        {
+            field: "songAlbum",
+            headerName: "노래 앨범",
+            width: 80,
+            renderCell: (params) => {
+                return (
+                    <div>
+                        <img
+                            className="songListAlbum border-gray"
+                            src={params.row.song.songImageUrl}
+                        />
+                    </div>
+                )
+            }
+        },
+        {
+            field: "songName",
+            headerName: "곡 이름",
+            width: 250,
+            renderCell: (params) => {
+                return (
+                    <div onClick={(e) => {
+                        navigate(`/song/${params.row.song.songNum}`);
+                    }}>
+                        {params.row.song.songName}
+                    </div>
+                )
+            }
+        },
+        {
+            field: "user",
+            headerName: "이름",
+            width: 250,
+            renderCell: (params) => {
+                return (
+                    <div>
+                        {params.row.user.nickName}
+                    </div>
+                )
+            }
+        },
+        {
+            field: "viewCount",
+            headerName: "조회수",
+            width: 100
+        },
+        {
+            field: "isPublic",
+            headerName: "업로드 여부",
+            width: 90,
+            renderCell: (params) => {
+                return (
+                    <div style={{
+                        marginTop: "20px"
+                    }}>
+                        <input
+                            style={{
+                                display: "flex",
+                                margin: "auto",
+                            }} type="checkbox"
+                            defaultChecked={params.row.isPublic}
+                            onChange={(e) => {
+                                publicHandler(e.target.checked, e.currentTarget, params.row);
+                            }}
+                        />
+                    </div>
+                )
+            }
+        },
+        {
+            field: "recordSound",
+            headerName: "듣기",
+            width: 100,
+            renderCell: (params) => {
+                return (
+                    <div>
+                        <Button
+                            className="mySaveButton"
+                            onClick={() => {
+                                setIsModalOpen({
+                                    isOpen: true,
+                                    selectedRecordUrl: params.row.recordSoundUrl
+                                });
+                            }}
+                        >
+                            듣기
+                        </Button>
+                    </div>
+                )
+            }
+        }
+    ]
 
     const [user, setUser] = useState({});
     const [nickName, setNickName] = useState("");
@@ -42,6 +147,7 @@ function MyPage() {
     const [userGender, setUserGender] = useState(0);
     const [userBirth, setUserBirth] = useState("");
     const [userIntroduce, setUserIntroduce] = useState("");
+    const [recordList, setRecordList] = useState([]);
 
     const [userGenderText, setUserGenderText] = useState("");
     const [userBirthText, setUserBirthText] = useState("");
@@ -161,6 +267,7 @@ function MyPage() {
                 text: "미로그인 상태입니다. 로그인 상태를 확인해주세요.",
                 icon: "error"
             }).then(() => {
+                sessionStorage.clear();
                 navigate("/login");
             })
         })
@@ -203,8 +310,71 @@ function MyPage() {
         })
     }
 
+    const publicHandler = (bool, target, record) => {
+
+        if(bool) {
+            Swal.fire({
+                title : "커버 곡 업로드",
+                text : "커버 곡을 공개하시겠습니까?",
+                icon : "warning",
+                showCancelButton: true
+            }).then((result)=>{
+                if (result.isConfirmed) {
+                    record.isPublic = true;
+                    axios.post('/api/record/update', record).then((response)=>{
+                        Swal.fire({
+                            title : "커버 곡 업로드",
+                            text : "커버 곡이 공개되었습니다",
+                            icon : "success",
+                        }).then(()=>{
+                            navigate(0);
+                        });
+                    });
+
+                    target.checked = true;
+                } else {
+                    target.checked = false;
+                }
+            })
+        } else {
+            Swal.fire({
+                title : "커버 곡 업로드",
+                text : "커버 곡을 비공개하시겠습니까?",
+                icon : "warning",
+                showCancelButton: true
+            }).then((result)=>{
+                if (result.isConfirmed) {
+                    record.isPublic = false;
+                    axios.post('/api/record/update', record).then((response)=>{
+                        Swal.fire({
+                            title : "커버 곡 업로드",
+                            text : "커버 곡이 비공개되었습니다",
+                            icon : "success",
+                        }).then(()=>{
+                            navigate(0);
+                        });
+                    });
+
+                    target.checked = false;
+                } else {
+                    target.checked = true;
+                }
+            })
+        }
+    }
+
     useEffect(() => {
         getLoginUser();
+
+        axios.get(`/api/record/${sessionStorage.getItem("loginUser")}`).then((response) => {
+            console.log(response.data);
+            response.data.map((record) => {
+                record.id = record.recordId;
+            })
+            setRecordList(response.data);
+        }).catch((error) => {
+            console.log(error);
+        })
     }, []);
 
     useEffect(() => {
@@ -574,6 +744,38 @@ function MyPage() {
                                     Withdrawal
                                 </Button>
                             </div>
+                        </Card>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col md="12">
+                        <Card>
+                            <Card.Header>
+                                <Card.Title as="h3">Upload History</Card.Title>
+                            </Card.Header>
+                            <Card.Body>
+                                <DataGrid
+                                    rows={recordList}
+                                    columns={columns}
+                                    initialState={{
+                                        pagination: {
+                                            paginationModel: {page: 0, pageSize: 10},
+                                        },
+                                    }}
+                                    pageSizeOptions={[5, 10]}
+                                />
+                                <Modal isOpen={isModalOpen.isOpen} ariaHideApp={false}
+                                       onRequestClose={() => setIsModalOpen(false)}
+                                       style={{
+                                           overlay: {position: 'fixed', background: 'rgba(0, 0, 0, 0.5)'},
+                                           content: {margin: 'auto', width: '500px', height: '150px'},
+                                       }}>
+                                    <AudioPlayer
+                                        src={isModalOpen.selectedRecordUrl}
+                                        autoPlay={false}
+                                    />
+                                </Modal>
+                            </Card.Body>
                         </Card>
                     </Col>
                 </Row>
