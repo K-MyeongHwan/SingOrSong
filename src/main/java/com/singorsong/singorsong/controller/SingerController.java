@@ -5,12 +5,14 @@ import com.singorsong.singorsong.entity.LikeSong;
 import com.singorsong.singorsong.entity.Singer;
 import com.singorsong.singorsong.entity.Song;
 import com.singorsong.singorsong.service.FanOfSingerService;
+import com.singorsong.singorsong.service.S3Service;
 import com.singorsong.singorsong.service.SingerService;
 import com.singorsong.singorsong.service.SongService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -21,12 +23,14 @@ public class SingerController {
     private final SingerService singerService;
     private final SongService songService;
     private final FanOfSingerService fanOfSingerService;
+    private final S3Service s3Service;
 
 
-    public SingerController(SingerService singerService, SongService songService, FanOfSingerService fanOfSingerService) {
+    public SingerController(SingerService singerService, SongService songService, FanOfSingerService fanOfSingerService, S3Service s3Service) {
         this.singerService = singerService;
         this.songService = songService;
         this.fanOfSingerService = fanOfSingerService;
+        this.s3Service = s3Service;
     }
 
     @PostMapping("/{singerName}")
@@ -75,4 +79,26 @@ public class SingerController {
         fanOfSingerService.deleteFanOfSinger(userId, singerNum);
     }
 
+    ///api/singer/update/singerImg/${singer.singerNum}
+    @PostMapping("/update/singerImg/{singerNum}")
+    public String updateSingerImg(@RequestParam(value = "singerImage") MultipartFile songImage, @PathVariable("singerNum") Long singerNum) {
+        String singerImageUrl = "";
+        try {
+            Singer singer = singerService.findSingerBySingerNum(singerNum.intValue());
+            String singerImageOriName = "";
+
+            List<String> result = s3Service.uploadFile(songImage, "singerImage/");
+            singerImageOriName = result.get(0);
+            singerImageUrl = result.get(1);
+
+            System.out.println(singerImageUrl);
+
+            singer.setSingerImageOriName(singerImageOriName);
+            singer.setSingerImageUrl(singerImageUrl);
+            singerService.updateSinger(singer);
+        } catch(Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return singerImageUrl;
+    }
 }

@@ -1,10 +1,84 @@
+.myModalContainer {
+    text-align: center;
+}
+
+.myRecording div {
+    position: absolute;
+    top: 50px;
+    right: 70px;
+    width: 35px;
+    height: 35px;
+    background-color: red;
+    border-radius: 50px;
+}
+
+.myRecording h3 {
+    position: absolute;
+    top: 30px;
+    right: 120px;
+    color: red;
+}
+
+.myPlayButton {
+    width: 60px;
+    height: 60px;
+    overflow: hidden;
+    margin: 15px;
+}
+
+.myPlayContainer {
+    display: flex;
+    justify-content: center;
+}
+
+.mySongName {
+    margin: 0;
+}
+
+.mySingerName {
+    color: white;
+    margin: 0;
+}
+
+.myCoverText {
+    padding: 20px;
+    color: white;
+    text-align: center;
+}
+
+.myBackDropFilter {
+    backdrop-filter: brightness(0.4) blur(5px);
+    width: 100%;
+    height: 100%;
+    border-radius: 5%;
+}
+
+.myCoverImage {
+    display: flex;
+    justify-content: center;
+}
+
+.myCoverImageSrc {
+    width: 400px;
+    height: 400px;
+    overflow: hidden;
+    border-radius: 50%;
+    margin-right: 5px;
+    padding: 15px;
+}
+
+.myCoverContainer {
+    background-size: cover;
+    background-position: center;
+    border-radius: 5%;
+}
 
 .songListAlbum {
     width: 30px;
     height: 30px;
     overflow: hidden;
     border-radius: 10%;
-    margin : auto;
+    margin: auto;
 }
 
 .mySingerImage img {
@@ -13,13 +87,20 @@
     border: 3px solid #E2E2E2;
 }
 
+.mySingerImage label {
+    width: 300px;
+    height: 300px;
+    border: 3px solid #E2E2E2;
+}
+
 .mySingerProfile {
     text-align: center;
 }
+
 .mySingerImage {
     display: flex;
     justify-content: center;
-    margin : auto;
+    margin: auto;
 }
 
 .myLikeContainer a {
@@ -40,27 +121,33 @@
     background-color: #fff;
 }
 
-.myLikeContainer .icon.heart img{
+.myLikeContainer .icon.heart img {
     width: calc(100vw * (24 / 1920));
     height: calc(100vw * (24 / 1920));
 }
 
-.myLikeContainer .icon.heart.fas{
-    color:red
+.myLikeContainer .icon.heart.fas {
+    color: red
 }
 
-.myLikeContainer .heart{
+.myLikeContainer .heart {
     transform-origin: center;
 }
 
-.myLikeContainer .heart.active img{
+.myLikeContainer .heart.active img {
     animation: animateHeart .3s linear forwards;
 }
 
-@keyframes animateHeart{
-    0%{transform:scale(.2);}
-    40%{transform:scale(1.2);}
-    100%{transform:scale(1);}
+@keyframes animateHeart {
+    0% {
+        transform: scale(.2);
+    }
+    40% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
 }
 
 .mySongSound {

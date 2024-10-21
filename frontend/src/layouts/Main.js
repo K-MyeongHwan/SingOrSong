@@ -9,6 +9,7 @@ import Song from "../views/Song";
 import Register from "../views/Register";
 import axios from "axios";
 import Singer from "../views/Singer";
+import Cover from "../views/Cover";
 
 export const MainContext = createContext();
 
@@ -55,6 +56,7 @@ function Main() {
                             <Route path="song/:songNum" element={<Song/>}/>
                             <Route path="singer/:singerName" element={<Singer/>}/>
                             <Route path="register" element={<Register/>}/>
+                            <Route path="cover/:songNum" element={<Cover />}/>
                         </Routes>
                     </div>
                     <div className="myFooter">

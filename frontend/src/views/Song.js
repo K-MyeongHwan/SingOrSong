@@ -21,6 +21,12 @@ function Song() {
 
     );
 
+    const isLoginHandler = ()=>{
+        axios.post("/api/user/isLogin").then((response)=>{
+
+        })
+    }
+
     //soundUpload
     const [audioPlayer, setAudioPlayer] = useState(<></>);
     const [songSoundUrl, setSongSoundUrl] = useState("");
@@ -126,9 +132,9 @@ function Song() {
                 axios.post(`/api/song/like/insert/${songNum}`).then((response) => {
                     setLikeCount(likeCount + 1);
                     Swal.fire({
-                        title : "노래 좋아요",
-                        text : "좋아요를 눌렀습니다!",
-                        icon : "success"
+                        title: "노래 좋아요",
+                        text: "좋아요를 눌렀습니다!",
+                        icon: "success"
                     })
                 }).catch((error) => {
                     console.log(error);
@@ -141,9 +147,9 @@ function Song() {
                 axios.post(`/api/song/like/delete/${songNum}`).then((response) => {
                     setLikeCount(likeCount - 1);
                     Swal.fire({
-                        title : "노래 좋아요",
-                        text : "좋아요를 취소했습니다.",
-                        icon : "warning"
+                        title: "노래 좋아요",
+                        text: "좋아요를 취소했습니다.",
+                        icon: "warning"
                     })
                 }).catch((error) => {
                     console.log(error);
@@ -181,7 +187,7 @@ function Song() {
             setReplayCount(response.data.replayCount);
             setSongImageOriName(response.data.songImageOriName);
             setCategoryName(response.data.category.categoryName);
-            
+
             if (response.data.songImageUrl) {
                 setSongImageUrl(response.data.songImageUrl);
                 setSongImage({
@@ -219,10 +225,10 @@ function Song() {
             console.log(error);
         });
 
-        axios.get(`/api/song/like/${songNum}`).then((response)=>{
+        axios.get(`/api/song/like/${songNum}`).then((response) => {
             console.log(response.data);
             setLikeCount(response.data);
-        }).catch((error)=>{
+        }).catch((error) => {
             console.log(error);
         })
     }, []);
@@ -459,6 +465,19 @@ function Song() {
                                 </div>
                                 {updateButton}
                             </Card.Body>
+                        </Card>
+                        <Card className="card-user">
+                            <div className="card-image mySongImageText">
+                                <h3>{song.songName} 부르기</h3>
+                                <Button
+                                    className="btn-fill pull-right"
+                                    onClick={(e) => {
+                                        navigate("/cover/" + song.songNum);
+                                    }}
+                                >
+                                    커버하기!
+                                </Button>
+                            </div>
                         </Card>
                     </Col>
                 </Row>
