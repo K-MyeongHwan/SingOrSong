@@ -18,6 +18,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Date;
+
 @Entity(name="Record")
 @Getter
 @ToString
@@ -30,7 +32,11 @@ public class Record {
 
     @Column(name="viewCount")
     @Setter
-    private int viewCount;
+    private Integer viewCount;
+
+    @Column(name="likeRecordCount")
+    @Setter
+    private Integer likeRecordCount;
 
     @Column(name="recordSoundUrl")
     @Setter
@@ -43,6 +49,10 @@ public class Record {
     @Column(name="isPublic")
     @Setter
     private Boolean isPublic;
+
+    @Column(name="recordDate")
+    @Setter
+    private Date recordDate;
 
     @ManyToOne
     @Setter
@@ -57,8 +67,9 @@ public class Record {
     private User user;
 
     @Builder
-    public Record(Song song, User user) {
+    public Record(Song song, User user, Date recordDate) {
         this.song = song;
         this.user = user;
+        this.recordDate = recordDate;
     }
 }

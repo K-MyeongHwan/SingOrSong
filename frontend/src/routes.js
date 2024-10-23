@@ -8,6 +8,7 @@ import Notifications from "./views/Notifications.js";
 import Upgrade from "./views/Upgrade.js";
 import Login from "./views/Login";
 import MyPage from "./views/MyPage";
+import CoverList from "./views/CoverList";
 
 const dashboardRoutes = [
   {
@@ -19,7 +20,7 @@ const dashboardRoutes = [
   },
   {
     path: "/home",
-    name: "Home",
+    name: "Popular Song",
     icon: "nc-icon nc-grid-45",
     component: Home
   },
@@ -31,39 +32,22 @@ const dashboardRoutes = [
     component: MyPage,
   },
   {
-    path: "/table",
-    name: "Table List",
+    path: "/coverList",
+    name: "Popular Cover",
     icon: "nc-icon nc-notes",
-    component: TableList,
-    layout: "/admin"
+    component: CoverList,
+    layout: "/coverList"
   },
   {
-    path: "/typography",
-    name: "Typography",
-    icon: "nc-icon nc-paper-2",
-    component: Typography,
-    layout: "/admin"
+    path: "",
+    name: "Search",
+    icon: "nc-icon nc-zoom-split",
   },
   {
     path: "/icons",
     name: "Icons",
     icon: "nc-icon nc-atom",
     component: Icons,
-    layout: "/admin"
-  },
-  {
-    path: "/maps",
-    name: "Maps",
-    icon: "nc-icon nc-pin-3",
-    component: Maps,
-    layout: "/admin"
-  },
-  {
-    path: "/notifications",
-    name: "Notifications",
-    icon: "nc-icon nc-bell-55",
-    component: Notifications,
-    layout: "/admin"
   }
 ];
 

@@ -1,18 +1,18 @@
 package com.singorsong.singorsong.controller;
 
+import com.singorsong.singorsong.entity.LikeRecord;
+import com.singorsong.singorsong.entity.LikeSong;
 import com.singorsong.singorsong.entity.Record;
 import com.singorsong.singorsong.entity.Singer;
 import com.singorsong.singorsong.repository.RecordRepository;
-import com.singorsong.singorsong.service.RecordService;
-import com.singorsong.singorsong.service.S3Service;
-import com.singorsong.singorsong.service.SongService;
-import com.singorsong.singorsong.service.UserService;
+import com.singorsong.singorsong.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -23,14 +23,14 @@ public class RecordController {
     private final RecordService recordService;
     private final SongService songService;
     private final UserService userService;
-    private final RecordRepository recordRepository;
+    private final LikeRecordService likeRecordService;
 
-    public RecordController(S3Service s3Service, RecordService recordService, SongService songService, UserService userService, RecordRepository recordRepository) {
+    public RecordController(S3Service s3Service, RecordService recordService, SongService songService, UserService userService, LikeRecordService likeRecordService) {
         this.s3Service = s3Service;
         this.recordService = recordService;
         this.songService = songService;
         this.userService = userService;
-        this.recordRepository = recordRepository;
+        this.likeRecordService = likeRecordService;
     }
 
 
@@ -43,6 +43,7 @@ public class RecordController {
         Record record = Record.builder().
                 song(songService.findSongBySongNum(songNum)).
                 user(userService.getUserByUserId(userId)).
+                recordDate(new Date()).
                 build();
 
         System.out.println(record);
@@ -86,5 +87,61 @@ public class RecordController {
     @GetMapping("/{userId}")
     public List<Record> getRecordByUserId(@PathVariable("userId") int userId) {
         return recordService.findByUserId(userId);
+    }
+
+    @GetMapping("/")
+    public List<Record> getPublicRecord() {
+        return recordService.findByIsPublic(true);
+    }
+
+    @PostMapping("/{recordId}")
+    public Record getRecordByRecordId(@PathVariable("recordId") int recordId) {
+        return recordService.findByRecordId(recordId);
+    }
+
+    @PostMapping("/like/insert/{recordId}")
+    @Secured("ROLE_USER")
+    public void insertLikeRecord(@PathVariable("recordId") int recordId, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        int userId = (Integer) session.getAttribute("loginUser");
+
+        likeRecordService.insertLikeRecord(userId, recordId);
+        recordService.updateLikeRecordCount(recordId, true);
+    }
+
+    @PostMapping("/like/delete/{recordId}")
+    @Secured("ROLE_USER")
+    public void deleteLikeRecord(@PathVariable("recordId") int recordId, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        int userId = (Integer) session.getAttribute("loginUser");
+
+        likeRecordService.deleteLikeSong(userId, recordId);
+        recordService.updateLikeRecordCount(recordId, false);
+    }
+
+    @PostMapping("/like/{recordId}")
+    @Secured("ROLE_USER")
+    public LikeRecord getLikeSong(@PathVariable("recordId") int recordId, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        if(session.getAttribute("loginUser") == null) {
+            return null;
+        }
+
+        int userId = (Integer) session.getAttribute("loginUser");
+
+        return likeRecordService.findByUserIdAndRecordId(userId, recordId);
+    }
+
+    @PostMapping("/view/{recordId}")
+    @Secured("ROLE_USER")
+    public void updateViewCount(@PathVariable("recordId") int recordId) {
+        Record record = recordService.findByRecordId(recordId);
+
+        if(record.getViewCount() == null) {
+            record.setViewCount(1);
+        } else {
+            record.setViewCount(record.getViewCount() + 1);
+        }
+        recordService.updateRecord(record);
     }
 }

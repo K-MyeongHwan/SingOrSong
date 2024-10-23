@@ -31,4 +31,20 @@ public class RecordService {
     public List<Record> findByUserId(int userId) {
         return recordRepository.findByUserUserId(userId);
     }
+
+    public List<Record> findByIsPublic(boolean isPublic) {
+        return recordRepository.findByIsPublic(isPublic);
+    }
+
+    public void updateLikeRecordCount(int recordId, boolean isLike) {
+        Record record = recordRepository.findByRecordId(recordId);
+
+        if (isLike) {
+            record.setLikeRecordCount(record.getLikeRecordCount() + 1);
+        } else {
+            record.setLikeRecordCount(record.getLikeRecordCount() - 1);
+        }
+
+        recordRepository.save(record);
+    }
 }

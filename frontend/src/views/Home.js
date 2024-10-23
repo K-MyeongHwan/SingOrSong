@@ -265,7 +265,6 @@ function Home() {
                                 <FormControlLabel value="songName" control={<Radio size="small"/>} label="곡 이름"/>
                             </RadioGroup>
                         </FormControl>
-                        <h2>곡 검색</h2>
                         <hr/>
                         <Row>
                             <Col className="pl-1" md="6">
