@@ -218,6 +218,7 @@ function Song() {
         axios.post(`/api/song/like/${songNum}`).then((response) => {
             console.log(response.data);
             if (response.data) {
+                setLikeActive(false);
                 setLikeIconClassName("icon heart active");
                 setLikeImage("https://cdn-icons-png.flaticon.com/512/803/803087.png");
             }

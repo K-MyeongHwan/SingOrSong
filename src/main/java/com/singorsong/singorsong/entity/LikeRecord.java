@@ -3,9 +3,9 @@ package com.singorsong.singorsong.entity;
 /*
     likeRecordId INT(100) NOT NULL PRIMARY KEY,
     isChecked Boolean default false,
-    songNum   INT(30),
+    recordId   INT(30),
     userId    INT(30),
-    FOREIGN KEY(songNum) references Song(songNum),
+    FOREIGN KEY(recordId) references Record(recordId),
     FOREIGN KEY(userId) references User(userId)
  */
 
@@ -31,9 +31,9 @@ public class LikeRecord {
 
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name="songNum")
+    @JoinColumn(name="recordId")
     @ToString.Exclude
-    private Song song;
+    private Record record;
 
     @ManyToOne
     @JsonIgnore
@@ -42,9 +42,9 @@ public class LikeRecord {
     private User user;
 
     @Builder
-    public LikeRecord(Boolean isChecked, Song song, User user) {
+    public LikeRecord(Boolean isChecked, Record record, User user) {
         this.isChecked = isChecked;
-        this.song = song;
+        this.record = record;
         this.user = user;
     }
 }

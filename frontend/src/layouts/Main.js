@@ -7,13 +7,16 @@ import routes from "../routes.js";
 import sidebarImage from "../assets/img/sidebarImage.png";
 import Song from "../views/Song";
 import Register from "../views/Register";
-import axios from "axios";
 import Singer from "../views/Singer";
 import Cover from "../views/Cover";
+import CoverDetail from "../views/CoverDetail";
+import SearchBar from "../components/SearchBar/SearchBar";
+import {isSearchOn} from "../components/Context/isSearchOn";
 
 export const MainContext = createContext();
 
 function Main() {
+    const [isSearch, setIsSearch] = useState(true);
     const [image, setImage] = React.useState(sidebarImage);
     const [color, setColor] = React.useState("black");
     const [hasImage, setHasImage] = React.useState(true);
@@ -36,6 +39,10 @@ function Main() {
     //React
     const getRoutes = (routes) => {
         return routes.map((prop, key) => {
+            if(prop.name === "Search") {
+                return ;
+            }
+
             return (
                 <Route
                     path={prop.path}
@@ -47,16 +54,19 @@ function Main() {
     };
 
     return (
+        <isSearchOn.Provider value={{ isSearch, setIsSearch }}>
             <div className="wrapper">
                 <Sidebar color={color} image={hasImage ? image : ""} routes={routes}/>
                 <div className="main-panel" ref={mainPanel}>
+                    <SearchBar/>
                     <div className="content">
                         <Routes>
                             {getRoutes(routes)}
                             <Route path="song/:songNum" element={<Song/>}/>
+                            <Route path="coverDetail/:recordId" element={<CoverDetail/>}/>
                             <Route path="singer/:singerName" element={<Singer/>}/>
                             <Route path="register" element={<Register/>}/>
-                            <Route path="cover/:songNum" element={<Cover />}/>
+                            <Route path="cover/:songNum" element={<Cover/>}/>
                         </Routes>
                     </div>
                     <div className="myFooter">
@@ -64,6 +74,7 @@ function Main() {
                     </div>
                 </div>
             </div>
+        </isSearchOn.Provider>
     );
 }
 
