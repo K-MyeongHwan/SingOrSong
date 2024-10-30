@@ -58,7 +58,7 @@ const Cover = () => {
 
             analyser.onaudioprocess = function (e) {
                 // 3분(180초) 지나면 자동으로 음성 저장 및 녹음 중지
-                if (e.playbackTime > 30 ) {
+                if (e.playbackTime > 10) {
                     console.log(songSoundDuration);
                     stream.getAudioTracks().forEach(function (track) {
                         track.stop();
@@ -108,7 +108,7 @@ const Cover = () => {
     };
 
     const uploadRecord = () => {
-        axios.put(`/api/record/insert/${songNum}`).then((response)=>{
+        axios.put(`/api/record/insert/${songNum}`).then((response) => {
             console.log(response.data);
             const formData = new FormData();
             formData.append("recordSound", renameFile(soundFile, song.songName + "-" + response.data + ".mp3"));
@@ -152,7 +152,7 @@ const Cover = () => {
             console.log(URL.createObjectURL(audioUrl)); // 출력된 링크에서 녹음된 오디오 확인 가능
         }
         // File 생성자를 사용해 파일로 변환
-        const sound = new File([audioUrl], "soundBlob" ,{lastModified: new Date().getTime(), type: "audio"});
+        const sound = new File([audioUrl], "soundBlob", {lastModified: new Date().getTime(), type: "audio"});
         setSoundFile(sound);
         console.log(sound); // File 정보 출력
 
@@ -164,7 +164,25 @@ const Cover = () => {
         )
     }, [audioUrl]);
 
+    const updateCoinCount = ()=> {
+        axios.post("/api/user/update/coinCount").then((response)=>{
+
+        }).catch((error)=>{
+            console.log(error);
+        })
+    }
+
     useEffect(() => {
+        if (!sessionStorage.getItem("loginUserRole")) {
+            Swal.fire({
+                title: "노래 커버하기",
+                text: "노래 커버를 하려면, 로그인을 해주세요.",
+                icon: "error"
+            }).then(() => {
+                navigate("/login")
+            })
+        }
+
         const url = `/api/song/${songNum}`;
         axios.get(url).then((response) => {
             console.log(response.data);
@@ -191,44 +209,59 @@ const Cover = () => {
         }).catch((error) => {
             console.log(error);
         });
+
+
     }, []);
 
     useEffect(() => {
+        console.log(user.coinCount);
         if (isPlay && onRec) {
-            Swal.fire({
-                title: "녹음하기",
-                text: "3초 뒤 녹음을 시작합니다",
-                icon: "warning",
-                timer: 3000,
-                timerProgressBar: true,
-                showConfirmButton: false
-            }).then(() => {
-                onRecAudio();
-                setAudioPlayer(
-                    <AudioPlayer
-                        src={song.songSoundUrl}
-                        autoPlay={true}
-                        volume={0}
-                        style={{
-                            display: "none"
-                        }}
-                    />
-                );
+            if (user.coinCount !== 0) {
+                Swal.fire({
+                    title: "녹음하기",
+                    text: "3초 뒤 녹음을 시작합니다",
+                    icon: "warning",
+                    timer: 3000,
+                    timerProgressBar: true,
+                    showConfirmButton: false
+                }).then(() => {
+                    updateCoinCount();
+                    onRecAudio();
+                    setAudioPlayer(
+                        <AudioPlayer
+                            src={song.songSoundUrl}
+                            autoPlay={true}
+                            volume={0}
+                            style={{
+                                display: "none"
+                            }}
+                        />
+                    );
 
-                /*
-                                        onEnded={() => {
-                            console.log("songEnd");
-                            setIsRecorded(false);
-                            setAudioPlayer(
-                                <></>
-                            );
-                            setIsRecording(true);
-                            setButtonImageUrl("https://singorsong-bucket.s3.ap-northeast-2.amazonaws.com/etc/playButton.png");
-                        }}
-                 */
-            });
-            setIsRecording(false);
-            setButtonImageUrl("https://singorsong-bucket.s3.ap-northeast-2.amazonaws.com/etc/stopButton.png");
+                    /*
+                                            onEnded={() => {
+                                console.log("songEnd");
+                                setIsRecorded(false);
+                                setAudioPlayer(
+                                    <></>
+                                );
+                                setIsRecording(true);
+                                setButtonImageUrl("https://singorsong-bucket.s3.ap-northeast-2.amazonaws.com/etc/playButton.png");
+                            }}
+                     */
+                });
+                setIsRecording(false);
+                setButtonImageUrl("https://singorsong-bucket.s3.ap-northeast-2.amazonaws.com/etc/stopButton.png");
+            } else {
+                Swal.fire({
+                    title: "노래 커버",
+                    text: "코인이 부족합니다. 코인을 채워주세요.",
+                    icon: "error"
+                }).then(() => {
+                    navigate("/myPage");
+                })
+            }
+
         } else {
             if (!onRec) {
                 Swal.fire({
@@ -281,7 +314,7 @@ const Cover = () => {
                             &nbsp;&nbsp;
                             <Button
                                 className="mySaveButton"
-                                onClick={()=>{
+                                onClick={() => {
                                     uploadRecord()
                                 }}
                             >

@@ -5,6 +5,8 @@ import com.singorsong.singorsong.entity.Song;
 import com.singorsong.singorsong.repository.SingerRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class SingerService {
 
@@ -24,5 +26,9 @@ public class SingerService {
 
     public void updateSinger(Singer singer) {
         singerRepository.save(singer);
+    }
+
+    public List<Singer> findBySingerNameContaining(String singerName) {
+        return singerRepository.findBySingerNameContains(singerName);
     }
 }

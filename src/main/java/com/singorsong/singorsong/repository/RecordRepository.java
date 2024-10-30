@@ -13,4 +13,6 @@ public interface RecordRepository extends JpaRepository<Record, Integer> {
     public List<Record> findByUserUserId(int userId);
 
     public List<Record> findByIsPublic(boolean isPublic);
+
+    public List<Record> findByUserUserIdAndIsPublic(int userId, boolean isPublic);
 }

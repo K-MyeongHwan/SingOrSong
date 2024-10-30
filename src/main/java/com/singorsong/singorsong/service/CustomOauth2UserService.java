@@ -76,6 +76,10 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
             user.setPlatform(platformRepository.findByPlatName(registrationId));
 
         } else if(registrationId.equals("naver")) {
+            System.out.println("*********************************");
+            System.out.println("naver");
+            System.out.println("*********************************");
+
             Map<String, String> properties = oauth2User.getAttribute("response");
 
             user = User.builder()

@@ -18,11 +18,13 @@ function CoverList() {
     let columns = [
         {
             field: "recordId",
+            headerClassName: 'super-app-theme--header',
             headerName: "커버 번호",
             width: 100
         },
         {
             field: "songAlbum",
+            headerClassName: 'super-app-theme--header',
             headerName: "노래 앨범",
             width: 80,
             renderCell: (params) => {
@@ -38,6 +40,7 @@ function CoverList() {
         },
         {
             field: "songName",
+            headerClassName: 'super-app-theme--header',
             headerName: "곡 이름",
             width: 200,
             renderCell: (params) => {
@@ -52,6 +55,7 @@ function CoverList() {
         },
         {
             field: "nickName",
+            headerClassName: 'super-app-theme--header',
             headerName: "커버 유저 이름",
             width: 250,
             renderCell: (params) => {
@@ -64,11 +68,14 @@ function CoverList() {
         },
         {
             field: "viewCount",
+            headerClassName: 'super-app-theme--header',
             headerName: "조회수",
             width: 100
         },
         {
             field: "likeRecordCount",
+            headerClassName: 'super-app-theme--header',
+            flex : 1,
             headerName: "좋아요 수",
             width: 100
         }
@@ -103,6 +110,7 @@ function CoverList() {
                         <Col className="pl-1" md="8">
                             <Form.Control
                                 placeholder="곡 번호"
+                                className="myInputTrans"
                                 type="number"
                                 onChange={(e) => {
                                     songNumChangeHandler(e.target.value);
@@ -111,15 +119,15 @@ function CoverList() {
                         </Col>
                         <Col className="pl-1" md="3">
 
-                            <Button
-                                className="btn-fill pull-right"
+                            <button
+                                className="custom-btn btn-1"
                                 variant="info"
                                 onClick={() => {
                                     songNumChangeHandler()
                                 }}
                             >
                                 검색
-                            </Button>
+                            </button>
                         </Col>
                     </Row>
                 );
@@ -136,8 +144,8 @@ function CoverList() {
         let recordListCopy = [...recordList];
         let sortList = [];
 
-        recordListCopy.forEach((record)=>{
-            if(record.song.songNum == songNum) {
+        recordListCopy.forEach((record) => {
+            if (record.song.songNum == songNum) {
                 sortList.push(record);
             }
         });
@@ -154,7 +162,11 @@ function CoverList() {
                 record.songName = record.song.songName;
                 record.nickName = record.user.nickName;
 
-                if(!record.likeRecordCount) {
+                if (!record.viewCount) {
+                    record.viewCount = 0;
+                }
+
+                if (!record.likeRecordCount) {
                     record.likeRecordCount = 0;
                 }
             })
@@ -166,44 +178,45 @@ function CoverList() {
 
     return (
         <Container fluid>
-            <Card>
-                <Card.Header>
+            <Card className="myTodayCard">
+                <div className="three">
+                    <h1>커버 곡 인기순위</h1>
+                </div>
+                <div className="mySearchContainer">
 
-                    <Card.Title className="myTitle">커버 곡 인기차트</Card.Title>
-                    <Card className="mySearch">
-                        <FormControl>
-                            <FormLabel as="h5">검색 종류</FormLabel>
-                            <RadioGroup
-                                row
-                                defaultValue="category"
-                                onChange={(e) => {
-                                    changedSearchType(e.target.defaultValue);
-                                }}>
-                                <FormControlLabel value="viewCount" control={<Radio size="small"/>} label="조회수 순"/>
-                                <FormControlLabel value="likeRecord" control={<Radio size="small"/>} label="좋아요 순"/>
-                                <FormControlLabel value="songNum" control={<Radio size="small"/>} label="곡 번호"/>
-                            </RadioGroup>
-                        </FormControl>
-                        <hr/>
-                        <Row>
-                            <Col className="pl-1" md="6">
-                                <Form.Group>
-                                    {searchTypeComponent}
-                                </Form.Group>
-                            </Col>
-                        </Row>
-                    </Card>
-                </Card.Header>
+                    <FormControl>
+                        <RadioGroup
+                            row
+                            defaultValue="category"
+                            onChange={(e) => {
+                                changedSearchType(e.target.defaultValue);
+                            }}>
+                            <FormControlLabel value="viewCount" control={<Radio size="small"/>} label="조회수 순"/>
+                            <FormControlLabel value="likeRecord" control={<Radio size="small"/>} label="좋아요 순"/>
+                            <FormControlLabel value="songNum" control={<Radio size="small"/>} label="곡 번호"/>
+                        </RadioGroup>
+                    </FormControl>
+                    <Row>
+                        <Col className="pl-1" md="6">
+                            <Form.Group>
+                                {searchTypeComponent}
+                            </Form.Group>
+                        </Col>
+                    </Row>
+                </div>
+                <hr role="tournament1"/>
                 <Card.Body className="mySearch">
                     <DataGrid
                         rows={recordList}
                         columns={columns}
-                        initialState={{
-                            pagination: {
-                                paginationModel: {page: 0, pageSize: 10},
+                        sx={{
+                            '.MuiDataGrid-footerContainer': {
+                                display: 'none !important'
                             },
+                            '& .super-app-theme--header': {
+                                backgroundColor: 'rgba(132, 91, 43, 0.7)'
+                            }
                         }}
-                        pageSizeOptions={[5, 10]}
                     />
                 </Card.Body>
             </Card>

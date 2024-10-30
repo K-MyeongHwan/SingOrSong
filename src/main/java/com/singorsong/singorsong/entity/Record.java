@@ -15,8 +15,11 @@ create table record (
  */
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.util.Date;
 
@@ -56,7 +59,7 @@ public class Record {
 
     @ManyToOne
     @Setter
-    @JoinColumn(name="songNum")
+    @JoinColumn(name ="songNum")
     @ToString.Exclude
     private Song song;
 

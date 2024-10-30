@@ -146,7 +146,6 @@ function Singer() {
 
 
     useEffect(() => {
-
         if (sessionStorage.getItem("loginUserRole") === "[ROLE_ADMIN]") {
             console.log("isAdmin");
             setIsAdmin(true);
@@ -351,8 +350,7 @@ function Singer() {
                                                 likeHandler(e);
                                             }
                                             }>
-                                                <img src={likeImage}
-                                                />
+                                                <img src={likeImage}/>
                                             </a>
                                         </div>
                                     </div>
@@ -383,12 +381,11 @@ function Singer() {
                             <DataGrid
                                 rows={songList}
                                 columns={columns}
-                                initialState={{
-                                    pagination: {
-                                        paginationModel: {page: 0, pageSize: 10},
-                                    },
+                                sx={{
+                                    '.MuiDataGrid-footerContainer': {
+                                        display: 'none !important'
+                                    }
                                 }}
-                                pageSizeOptions={[5, 10]}
                                 onCellDoubleClick={(params, event) => {
                                     navigate(`/song/${params.id}`);
                                 }}

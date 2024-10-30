@@ -48,7 +48,7 @@ public class User {
 
     @Column(name="coinCount")
     @Setter
-    private int coinCount;
+    private Integer coinCount;
 
     @ManyToOne
     @JsonIgnore
@@ -66,6 +66,8 @@ public class User {
     private Platform platform;
 
     @Column(name="userPassword")
+    @ToString.Exclude
+    @JsonIgnore
     @Setter
     @Getter
     private String userPassword;

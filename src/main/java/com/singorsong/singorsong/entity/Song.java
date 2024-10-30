@@ -1,9 +1,14 @@
 package com.singorsong.singorsong.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity(name="Song")
 @Getter
@@ -24,6 +29,9 @@ public class Song {
 
     @Column(name="songDate")
     private Date songDate;
+
+    @Column(name="registeredDate")
+    private LocalDate registeredDate;
 
     @ManyToOne
     @JoinColumn(name="categoryNum")
@@ -48,6 +56,14 @@ public class Song {
     @Column(name="songSoundOriName")
     @Setter
     private String songSoundOriName;
+
+    @OneToMany(mappedBy = "song")
+    @JsonIgnore
+    private List<Record> recordList = new ArrayList<>();
+
+    @Transient
+    @Setter
+    private int recordCount;
 
     @Builder
     public Song(int songNum, String songName, int replayCount, Date songDate, Category category, Singer singer) {

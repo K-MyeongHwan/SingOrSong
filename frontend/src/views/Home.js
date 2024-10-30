@@ -15,19 +15,21 @@ function Home() {
     const [songNum, setSongNum] = useState(0);
     const [songName, setSongName] = useState('');
     const [searchType, setSearchType] = useState("category");
-    const [searchTypeComponent, setSearchTypeComponent] = useState(<></>)
+    const [searchTypeComponent, setSearchTypeComponent] = useState(<></>);
 
     let navigate = useNavigate();
     let columns = [
         {
             field: "songNum",
+            headerClassName: 'super-app-theme--header',
             headerName: "곡 번호",
             width: 100
         },
         {
             field: "songAlbum",
+            headerClassName: 'super-app-theme--header',
             headerName: "노래 앨범",
-            width: 80,
+            width: 100,
             renderCell: (params) => {
                 return (
                     <div>
@@ -41,11 +43,12 @@ function Home() {
         },
         {
             field: "songName",
+            headerClassName: 'super-app-theme--header',
             headerName: "곡 이름",
-            width: 200,
+            width: 300,
             renderCell: (params) => {
                 return (
-                    <div onClick={(e)=>{
+                    <div onClick={(e) => {
                         navigate(`/song/${params.id}`);
                     }}>
                         {params.row.songName}
@@ -55,11 +58,12 @@ function Home() {
         },
         {
             field: "singerName",
+            headerClassName: 'super-app-theme--header',
             headerName: "가수",
             width: 200,
             renderCell: (params) => {
                 return (
-                    <div onClick={(e)=>{
+                    <div onClick={(e) => {
                         navigate(`/singer/${params.row.singerName}`);
                     }}>
                         {params.row.singerName}
@@ -69,7 +73,9 @@ function Home() {
         },
         {
             field: "replayCount",
+            headerClassName: 'super-app-theme--header',
             headerName: "재생 횟수",
+            flex: 1,
             width: 100
         }
     ]
@@ -131,6 +137,14 @@ function Home() {
             case "category" : {
                 setSearchTypeComponent(
                     <Select options={categoryList}
+                            className="myInputTrans"
+                            styles={{
+                                control: (baseStyles, state) => ({
+                                    ...baseStyles,
+                                    borderColor : "gray",
+                                    backgroundColor: "transparent",
+                                })
+                            }}
                             onChange={(e) => {
                                 setSelectedCategory(e.value);
                             }}
@@ -141,6 +155,7 @@ function Home() {
             case "songNum" : {
                 setSearchTypeComponent(
                     <Form.Control
+                        className="myInputTrans"
                         placeholder="곡 번호"
                         type="number"
                         onChange={(e) => {
@@ -155,6 +170,7 @@ function Home() {
             case "songName" : {
                 setSearchTypeComponent(
                     <Form.Control
+                        className="myInputTrans"
                         placeholder="곡 이름"
                         type="text"
                         onChange={(e) => {
@@ -226,6 +242,13 @@ function Home() {
             setCategoryList(options);
             setSearchTypeComponent(
                 <Select options={options}
+                        styles={{
+                            control: (baseStyles, state) => ({
+                                ...baseStyles,
+                                borderColor : "gray",
+                                backgroundColor: "transparent",
+                            })
+                        }}
                         onChange={(e) => {
                             setSelectedCategory(e.value);
                         }}
@@ -248,60 +271,62 @@ function Home() {
 
     return (
         <Container fluid>
-            <Card>
-                <Card.Header>
-                    <Card.Title className="myTitle">인기차트</Card.Title>
-                    <Card className="mySearch">
-                        <FormControl>
-                            <FormLabel as="h5">검색 종류</FormLabel>
-                            <RadioGroup
-                                row
-                                defaultValue="category"
-                                onChange={(e) => {
-                                    changedSearchType(e.target.defaultValue);
-                                }}>
-                                <FormControlLabel value="category" control={<Radio size="small"/>} label="카테고리"/>
-                                <FormControlLabel value="songNum" control={<Radio size="small"/>} label="곡 번호"/>
-                                <FormControlLabel value="songName" control={<Radio size="small"/>} label="곡 이름"/>
-                            </RadioGroup>
-                        </FormControl>
-                        <hr/>
-                        <Row>
-                            <Col className="pl-1" md="6">
-                                <Form.Group>
-                                    {searchTypeComponent}
-                                </Form.Group>
-                            </Col>
-                            <Col className="pl-1" md="3">
-                                <Button
-                                    className="btn-fill pull-right"
-                                    variant="info"
-                                    onClick={() => {
-                                        handlerBySearchType(searchType);
-                                    }}
-                                >
-                                    곡 검색
-                                </Button>
-                            </Col>
-                        </Row>
-                    </Card>
-                </Card.Header>
+            <Card className="myTodayCard">
+                <div className="three">
+                    <h1>인기차트</h1>
+                </div>
+                <div className="mySearchContainer">
+                    <FormControl>
+                        <RadioGroup
+                            row
+                            defaultValue="category"
+                            onChange={(e) => {
+                                changedSearchType(e.target.defaultValue);
+                            }}>
+                            <FormControlLabel value="category" control={<Radio size="small"/>} label="카테고리"/>
+                            <FormControlLabel value="songNum" control={<Radio size="small"/>} label="곡 번호"/>
+                            <FormControlLabel value="songName" control={<Radio size="small"/>} label="곡 이름"/>
+                        </RadioGroup>
+                    </FormControl>
+                    <Row>
+                        <Col className="pl-1" md="6">
+                            <Form.Group>
+                                {searchTypeComponent}
+                            </Form.Group>
+                        </Col>
+                        <Col className="pl-1" md="3">
+                            <button
+                                className="custom-btn btn-1"
+                                variant="info"
+                                onClick={() => {
+                                    handlerBySearchType(searchType);
+                                }}
+                            >
+                                Search
+                            </button>
+                        </Col>
+                    </Row>
+                </div>
+                <hr role="tournament1"/>
                 <Card.Body className="mySearch">
                     <DataGrid
                         rows={songList}
                         columns={columns}
-                        initialState={{
-                            pagination: {
-                                paginationModel: {page: 0, pageSize: 10},
+                        sx={{
+                            '.MuiDataGrid-footerContainer': {
+                                display: 'none !important'
                             },
+                            '& .super-app-theme--header': {
+                                backgroundColor: 'rgba(132, 91, 43, 0.7)'
+                            }
                         }}
-                        pageSizeOptions={[5, 10]}
                     />
                 </Card.Body>
             </Card>
         </Container>
 
-    );
+    )
+        ;
 }
 
 export default Home;

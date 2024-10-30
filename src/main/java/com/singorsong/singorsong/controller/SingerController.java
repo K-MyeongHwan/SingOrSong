@@ -1,9 +1,6 @@
 package com.singorsong.singorsong.controller;
 
-import com.singorsong.singorsong.entity.FanOfSinger;
-import com.singorsong.singorsong.entity.LikeSong;
-import com.singorsong.singorsong.entity.Singer;
-import com.singorsong.singorsong.entity.Song;
+import com.singorsong.singorsong.entity.*;
 import com.singorsong.singorsong.service.FanOfSingerService;
 import com.singorsong.singorsong.service.S3Service;
 import com.singorsong.singorsong.service.SingerService;
@@ -100,5 +97,10 @@ public class SingerController {
             System.out.println(e.getMessage());
         }
         return singerImageUrl;
+    }
+
+    @PostMapping("/contain/{singerName}")
+    public List<Singer> getBySingerNameContains(@PathVariable("singerName") String singerName) {
+        return singerService.findBySingerNameContaining(singerName);
     }
 }
