@@ -30,7 +30,6 @@ public class HomeController {
     @GetMapping("/categoryList")
     public List<Category> getCategoryList() {
         List<Category> result = categoryService.findCategoryAll();
-        System.out.println(result);
 
         if(!(result.isEmpty())) {
             return result;
@@ -42,6 +41,10 @@ public class HomeController {
     @GetMapping("/songList")
     public List<Song> getSongList() {
         List<Song> result = songService.findSongAll();
+        for(Song song : result) {
+            song.setRecordCount(song.getRecordList().size());
+        }
+
         System.out.println(result);
 
         if(!(result.isEmpty())) {

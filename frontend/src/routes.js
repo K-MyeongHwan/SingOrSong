@@ -1,14 +1,8 @@
 import Home from "./views/Home.js";
-import UserProfile from "./views/UserProfile.js";
-import TableList from "./views/TableList.js";
-import Typography from "./views/Typography.js";
-import Icons from "./views/Icons.js";
-import Maps from "./views/Maps.js";
-import Notifications from "./views/Notifications.js";
-import Upgrade from "./views/Upgrade.js";
-import Login from "./views/Login";
 import MyPage from "./views/MyPage";
 import CoverList from "./views/CoverList";
+import Ranking from "./views/Ranking";
+import Login from "./views/Login";
 
 const dashboardRoutes = [
   {
@@ -19,17 +13,26 @@ const dashboardRoutes = [
     component: Login,
   },
   {
+    upgrade: true,
+    name: "Logout",
+    icon: "nc-icon nc-key-25",
+  },
+  {
+    path: "",
+    name: "Main",
+    icon: "nc-icon nc-bullet-list-67",
+    component: Ranking
+  },
+  {
+    path: "",
+    name: "Search",
+    icon: "nc-icon nc-zoom-split",
+  },
+  {
     path: "/home",
     name: "Popular Song",
     icon: "nc-icon nc-grid-45",
     component: Home
-  },
-  {
-    upgrade: true,
-    path: "/myPage",
-    name: "MyPage",
-    icon: "nc-icon nc-circle-09",
-    component: MyPage,
   },
   {
     path: "/coverList",
@@ -39,15 +42,10 @@ const dashboardRoutes = [
     layout: "/coverList"
   },
   {
-    path: "",
-    name: "Search",
-    icon: "nc-icon nc-zoom-split",
-  },
-  {
-    path: "/icons",
-    name: "Icons",
-    icon: "nc-icon nc-atom",
-    component: Icons,
+    path: "/myPage",
+    name: "MyPage",
+    icon: "nc-icon nc-circle-09",
+    component: MyPage,
   }
 ];
 

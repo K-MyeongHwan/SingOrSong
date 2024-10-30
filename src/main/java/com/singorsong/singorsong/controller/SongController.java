@@ -155,4 +155,9 @@ public class SongController {
     public Integer getLikeSongLength(@PathVariable("songNum") int songNum) {
         return likeSongService.findBySongNum(songNum).size();
     }
+
+    @GetMapping("/search/date")
+    public List<Song> getSongByMonth() {
+        return songService.findSongByRegisteredDateBetween();
+    }
 }

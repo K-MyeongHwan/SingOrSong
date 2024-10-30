@@ -47,4 +47,8 @@ public class RecordService {
 
         recordRepository.save(record);
     }
+
+    public List<Record> findByUserIdAndIsPublic(int userId, boolean isPublic) {
+        return recordRepository.findByUserUserIdAndIsPublic(userId, isPublic);
+    }
 }

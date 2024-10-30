@@ -7,6 +7,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.beans.Transient;
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,5 +56,13 @@ public class SongService {
 
     public List<Song> findSongBySingerNum(int singerNum) {
         return songRepository.findSongBySingerSingerNum(singerNum);
+    }
+
+    public List<Song> findSongByRegisteredDateBetween() {
+        YearMonth today = YearMonth.now();
+        LocalDate startDate = today.atDay(1);
+        LocalDate endDate = today.atEndOfMonth();
+
+        return songRepository.findSongByRegisteredDateBetween(startDate, endDate);
     }
 }

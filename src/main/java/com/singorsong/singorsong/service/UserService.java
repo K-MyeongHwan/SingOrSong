@@ -65,4 +65,8 @@ public class UserService {
     public User getUserByUserId(int userId) {
         return userRepository.findUserByUserId(userId);
     }
+
+    public List<User> findByNickNameContaining(String nickName) {
+        return userRepository.findByNickNameContains(nickName);
+    }
 }

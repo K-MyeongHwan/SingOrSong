@@ -4,6 +4,8 @@ import com.singorsong.singorsong.entity.Category;
 import com.singorsong.singorsong.entity.Song;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 public interface SongRepository extends JpaRepository<Song, Integer> {
@@ -14,4 +16,6 @@ public interface SongRepository extends JpaRepository<Song, Integer> {
     public List<Song> findSongBySongNameContains(String songName);
 
     public List<Song> findSongBySingerSingerNum(Integer singerNum);
+
+    public List<Song> findSongByRegisteredDateBetween(LocalDate startDate, LocalDate endDate);
 }

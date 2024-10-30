@@ -36,6 +36,11 @@ public class UserController {
         this.s3Service = s3Service;
     }
 
+    @PostMapping("/{nickName}")
+    public User getUserByNickName(@PathVariable("nickName") String nickName) {
+        return userService.getUserByNickName(nickName).get(0);
+    }
+
     @PostMapping("/isLogin")
     public Map<String, String> getIsLogin(HttpServletRequest request) {
         HttpSession session = request.getSession();
@@ -59,7 +64,9 @@ public class UserController {
         HttpSession session = request.getSession();
         try {
             int userId = (Integer) session.getAttribute("loginUser");
-            return userService.getUserByUserId(userId);
+            User user = userService.getUserByUserId(userId);
+            System.out.println(user);
+            return user;
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return null;
@@ -153,5 +160,22 @@ public class UserController {
             System.out.println(e.getMessage());
         }
         return profileImgUrl;
+    }
+
+    @PostMapping("/contain/{nickName}")
+    public List<User> getByNickNameContains(@PathVariable("nickName") String nickName) {
+        return userService.findByNickNameContaining(nickName);
+    }
+
+    @PostMapping("/update/coinCount")
+    @Secured("ROLE_USER")
+    public void updateUserCoinCount(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        int userId = (Integer) session.getAttribute("loginUser");
+
+        User user = userService.getUserByUserId(userId);
+        user.setCoinCount(user.getCoinCount() - 1);
+
+        userService.updateUser(user);
     }
 }

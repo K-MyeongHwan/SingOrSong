@@ -18,6 +18,7 @@
     "dayjs": "^1.11.12",
     "http-proxy-middleware": "^3.0.0",
     "react": "^18.3.1",
+    "react-backdrop-filter": "^2.1.0",
     "react-bootstrap": "^2.10.4",
     "react-cookie": "^7.2.1",
     "react-dom": "^18.3.1",

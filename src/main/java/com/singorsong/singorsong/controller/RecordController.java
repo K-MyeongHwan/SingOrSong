@@ -144,4 +144,9 @@ public class RecordController {
         }
         recordService.updateRecord(record);
     }
+
+    @PostMapping("/user/{userId}")
+    public List<Record> getRecordCountByUserId(@PathVariable("userId") int userId) {
+        return recordService.findByUserIdAndIsPublic(userId, true);
+    }
 }
