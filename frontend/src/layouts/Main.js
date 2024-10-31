@@ -1,20 +1,18 @@
 import React, {createContext, useState} from "react";
 import {useLocation, Route, Routes} from "react-router-dom";
 
-import BackdropFilter from "react-backdrop-filter";
 import Footer from "../components/Footer/Footer";
 import Sidebar from "../components/Sidebar/Sidebar";
 import routes from "../routes.js";
 import mainBackgroundImage from "../assets/img/mainBackgroundImage.jpg";
-import Song from "../views/Song";
-import Register from "../views/Register";
 import Singer from "../views/Singer";
 import Cover from "../views/Cover";
-import CoverDetail from "../views/CoverDetail";
 import SearchBar from "../components/SearchBar/SearchBar";
 import {isSearchOn} from "../components/Context/isSearchOn";
 import User from "../views/User";
-import Cover2 from "../views/Cover2";
+import Song from "../views/Song";
+import CoverDetail from "../views/CoverDetail";
+import Song_before from "../views/Song_before";
 
 export const MainContext = createContext();
 
@@ -73,7 +71,7 @@ function Main() {
                             <Routes>
                                 {getRoutes(routes)}
                                 <Route path="song/:songNum" element={<Song/>}/>
-                                <Route path="cover2/:songNum" element={<Cover2/>}/>
+                                <Route path="songbefore/:songNum" element={<Song_before/>}/>
                                 <Route path="coverDetail/:recordId" element={<CoverDetail/>}/>
                                 <Route path="singer/:singerName" element={<Singer/>}/>
                                 <Route path="user/:nickName" element={<User/>}/>

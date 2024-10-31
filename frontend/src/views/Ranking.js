@@ -19,7 +19,7 @@ function Ranking() {
             renderCell: (params) => {
                 return (
                     <div onClick={(e) => {
-                        setSelectedSong(newSongList[params.id - 1]);
+                        setSelectedSong(newSongList[params.row.key]);
                         likeChangeHandler(params.id);
                     }}>
                         {params.id}
@@ -114,8 +114,22 @@ function Ranking() {
         }
     ]
 
-
     const likeChangeHandler = (songNum) => {
+        axios.post(`/api/song/like/${songNum}`).then((response) => {
+            console.log(response.data);
+            if (response.data) {
+                setLikeActive(false);
+                setLikeIconClassName("icon heart active");
+                setLikeImage("https://cdn-icons-png.flaticon.com/512/803/803087.png");
+            } else {
+                setLikeActive(true);
+                setLikeIconClassName("icon heart");
+                setLikeImage("https://cdn-icons-png.flaticon.com/512/812/812327.png");
+            }
+        }).catch((error) => {
+            console.log(error);
+        });
+
         axios.get(`/api/song/like/${songNum}`).then((response) => {
             console.log(response.data);
             setSelectedLike(response.data);
@@ -151,37 +165,28 @@ function Ranking() {
                 setLikeIconClassName("icon heart active");
                 setLikeImage("https://cdn-icons-png.flaticon.com/512/803/803087.png");
 
-                /*
-                axios.post(`/api/singer/fan/insert/${singer.singerNum}`).then((response) => {
-                    setFanCount(fanCount + 1);
+                axios.post(`/api/song/like/insert/${selectedSong.songNum}`).then((response) => {
+                    setLikeCount(likeCount + 1);
                     Swal.fire({
-                        title: "가수 열혈팬",
-                        text: singer.singerName + "님의 열혈팬이 되었습니다!",
-                        icon: "success"
+                        title: "노래 좋아요", text: "좋아요를 눌렀습니다!", icon: "success"
                     })
                 }).catch((error) => {
                     console.log(error);
-                })
+                });
 
-                 */
             } else {
                 //안눌러져있음
                 setLikeIconClassName("icon heart");
                 setLikeImage("https://cdn-icons-png.flaticon.com/512/812/812327.png");
 
-                /*
-                axios.post(`/api/singer/fan/delete/${singer.singerNum}`).then((response) => {
-                    setFanCount(fanCount - 1);
+                axios.post(`/api/song/like/delete/${selectedSong.songNum}`).then((response) => {
+                    setLikeCount(likeCount - 1);
                     Swal.fire({
-                        title: "가수 열혈팬",
-                        text: singer.singerName + "님의 열혈팬을 취소했습니다.",
-                        icon: "warning"
+                        title: "노래 좋아요", text: "좋아요를 취소했습니다.", icon: "warning"
                     })
                 }).catch((error) => {
                     console.log(error);
                 })
-
-                 */
             }
         }
     }
@@ -189,10 +194,11 @@ function Ranking() {
     useEffect(() => {
         axios.get("/api/song/search/date").then((response) => {
             console.log(response.data);
-            response.data.map((song) => {
+            response.data.map((song, index) => {
                 song.id = song.songNum;
                 song.singerName = song.singer.singerName;
                 song.category = song.category.categoryName;
+                song.key = index
             })
             setNewSongList(response.data);
             setSelectedSong(response.data[0]);
@@ -277,7 +283,7 @@ function Ranking() {
                             </div>
                             <div className="myLikeContainer myRankingLike">
                                 <div className="right_area">
-                                    <a href="/" className={likeIconClassName} onClick={(e) => {
+                                    <a className={likeIconClassName} onClick={(e) => {
                                         setLikeActive(!likeActive);
                                         likeHandler(e);
                                     }

@@ -1,5 +1,65 @@
+.sliderText {
+    font-size : 15px;
+    font-weight: 400;
+    color : white;
+    position : absolute;
+    bottom : 0;
+    padding : 8px;
+    text-align: right;
+}
+
+.sliderFilter {
+    width : 100%;
+    height : 80px;
+    position : absolute;
+    bottom : 0;
+    backdrop-filter: brightness(0.2);
+    padding : 8px;
+    mask-image: linear-gradient(to top, black 10% ,transparent 80%);
+}
+
+.sliderImage {
+    width : 200px;
+    height : 200px;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size : 100% 100%;
+    border-radius: 3px;
+    position: relative;
+    z-index: 0;
+}
+
+.sliderImage:hover {
+
+}
+
+.mySliderContainer {
+    width : 90%;
+    margin : auto;
+}
+
+.mySingerProfile h3 {
+    font-weight : 400;
+}
+
+.mySingerLikeContainer {
+    position : absolute;
+    left : 40px;
+    top : 120px;
+}
+
+.mySongLikeContainer {
+    position : absolute;
+    left : 30px;
+    top : 30px;
+}
+
+.songInfoTitle {
+    font-weight : 500;
+}
+
 .songInfo {
-    margin-bottom : 40px;
+    margin-bottom : 20px;
     text-align: left;
 }
 
@@ -640,6 +700,14 @@ hr[role="tournament1"]::before {
     padding: 20px;
     color: white;
     text-align: center;
+}
+
+.myCoverText h2 {
+    font-weight : 400;
+}
+
+.myCoverText span {
+    font-weight : 310;
 }
 
 .myBackDropFilter {

@@ -7,8 +7,15 @@ import {DataGrid} from "@mui/x-data-grid";
 import Swal from "sweetalert2";
 import {useNavigate} from "react-router-dom";
 import {FormControl, FormControlLabel, FormLabel, Radio, RadioGroup} from "@mui/material";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 function Home() {
+    let settings = {
+        infinite: true, speed: 400, slidesToShow: 4, slidesToScroll: 2, autoplay: true, draggable: true
+    };
+    const [sliderList, setSliderList] = useState([]);
     const [categoryList, setCategoryList] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(0);
     const [songList, setSongList] = useState([]);
@@ -18,67 +25,48 @@ function Home() {
     const [searchTypeComponent, setSearchTypeComponent] = useState(<></>);
 
     let navigate = useNavigate();
-    let columns = [
-        {
-            field: "songNum",
-            headerClassName: 'super-app-theme--header',
-            headerName: "곡 번호",
-            width: 100
-        },
-        {
-            field: "songAlbum",
-            headerClassName: 'super-app-theme--header',
-            headerName: "노래 앨범",
-            width: 100,
-            renderCell: (params) => {
-                return (
-                    <div>
-                        <img
-                            className="songListAlbum border-gray"
-                            src={params.row.songImageUrl}
-                        />
-                    </div>
-                )
-            }
-        },
-        {
-            field: "songName",
-            headerClassName: 'super-app-theme--header',
-            headerName: "곡 이름",
-            width: 300,
-            renderCell: (params) => {
-                return (
-                    <div onClick={(e) => {
-                        navigate(`/song/${params.id}`);
-                    }}>
-                        {params.row.songName}
-                    </div>
-                )
-            }
-        },
-        {
-            field: "singerName",
-            headerClassName: 'super-app-theme--header',
-            headerName: "가수",
-            width: 200,
-            renderCell: (params) => {
-                return (
-                    <div onClick={(e) => {
-                        navigate(`/singer/${params.row.singerName}`);
-                    }}>
-                        {params.row.singerName}
-                    </div>
-                )
-            }
-        },
-        {
-            field: "replayCount",
-            headerClassName: 'super-app-theme--header',
-            headerName: "재생 횟수",
-            flex: 1,
-            width: 100
+    let columns = [{
+        field: "songNum", headerClassName: 'super-app-theme--header', headerName: "곡 번호", width: 100
+    }, {
+        field: "songAlbum",
+        headerClassName: 'super-app-theme--header',
+        headerName: "노래 앨범",
+        width: 100,
+        renderCell: (params) => {
+            return (<div>
+                <img
+                    className="songListAlbum border-gray"
+                    src={params.row.songImageUrl}
+                />
+            </div>)
         }
-    ]
+    }, {
+        field: "songName",
+        headerClassName: 'super-app-theme--header',
+        headerName: "곡 이름",
+        width: 300,
+        renderCell: (params) => {
+            return (<div onClick={(e) => {
+                navigate(`/song/${params.id}`);
+            }}>
+                {params.row.songName}
+            </div>)
+        }
+    }, {
+        field: "singerName",
+        headerClassName: 'super-app-theme--header',
+        headerName: "가수",
+        width: 200,
+        renderCell: (params) => {
+            return (<div onClick={(e) => {
+                navigate(`/singer/${params.row.singerName}`);
+            }}>
+                {params.row.singerName}
+            </div>)
+        }
+    }, {
+        field: "replayCount", headerClassName: 'super-app-theme--header', headerName: "재생 횟수", flex: 1, width: 100
+    }]
 
     const getSongListByCategoryNum = (categoryNum) => {
         const url = `api/home/songList/${categoryNum}`;
@@ -91,8 +79,7 @@ function Home() {
         }).catch((error) => {
             console.log(error);
             Swal.fire({
-                title: "검색 오류",
-                text: "카테고리에 해당된 노래가 검색되지 않았습니다."
+                title: "검색 오류", text: "카테고리에 해당된 노래가 검색되지 않았습니다."
             })
         });
     }
@@ -135,50 +122,45 @@ function Home() {
         setSearchType(searchType);
         switch (searchType) {
             case "category" : {
-                setSearchTypeComponent(
-                    <Select options={categoryList}
-                            className="myInputTrans"
-                            styles={{
-                                control: (baseStyles, state) => ({
-                                    ...baseStyles,
-                                    borderColor : "gray",
-                                    backgroundColor: "transparent",
-                                })
-                            }}
-                            onChange={(e) => {
-                                setSelectedCategory(e.value);
-                            }}
-                    />);
+                setSearchTypeComponent(<Select options={categoryList}
+                                               className="myInputTrans"
+                                               styles={{
+                                                   control: (baseStyles, state) => ({
+                                                       ...baseStyles,
+                                                       borderColor: "gray",
+                                                       backgroundColor: "transparent",
+                                                   })
+                                               }}
+                                               onChange={(e) => {
+                                                   setSelectedCategory(e.value);
+                                               }}
+                />);
                 break;
             }
 
             case "songNum" : {
-                setSearchTypeComponent(
-                    <Form.Control
-                        className="myInputTrans"
-                        placeholder="곡 번호"
-                        type="number"
-                        onChange={(e) => {
-                            setSongNum(e.target.value);
-                            changedSongNum(e.target.value);
-                        }}
-                    />
-                );
+                setSearchTypeComponent(<Form.Control
+                    className="myInputTrans"
+                    placeholder="곡 번호"
+                    type="number"
+                    onChange={(e) => {
+                        setSongNum(e.target.value);
+                        changedSongNum(e.target.value);
+                    }}
+                />);
                 break;
             }
 
             case "songName" : {
-                setSearchTypeComponent(
-                    <Form.Control
-                        className="myInputTrans"
-                        placeholder="곡 이름"
-                        type="text"
-                        onChange={(e) => {
-                            setSongName(e.target.value);
-                            changedSongName(e.target.value);
-                        }}
-                    />
-                );
+                setSearchTypeComponent(<Form.Control
+                    className="myInputTrans"
+                    placeholder="곡 이름"
+                    type="text"
+                    onChange={(e) => {
+                        setSongName(e.target.value);
+                        changedSongName(e.target.value);
+                    }}
+                />);
                 break;
             }
 
@@ -193,8 +175,7 @@ function Home() {
             case "category" : {
                 if (selectedCategory === 0) {
                     Swal.fire({
-                        title: "검색 오류",
-                        text: "카테고리를 선택해주세요."
+                        title: "검색 오류", text: "카테고리를 선택해주세요."
                     });
                     return;
                 }
@@ -206,8 +187,7 @@ function Home() {
                 changedSongNum(songNum);
                 if (songList.length === 0) {
                     Swal.fire({
-                        title: "검색 오류",
-                        text: "해당 곡 번호에 선택되는 곡이 없습니다."
+                        title: "검색 오류", text: "해당 곡 번호에 선택되는 곡이 없습니다."
                     })
                 }
                 break;
@@ -217,8 +197,7 @@ function Home() {
                 changedSongName(songName);
                 if (songList.length === 0) {
                     Swal.fire({
-                        title: "검색 오류",
-                        text: "해당 문자가 들어간 곡이 없습니다."
+                        title: "검색 오류", text: "해당 문자가 들어간 곡이 없습니다."
                     })
                 }
                 break;
@@ -228,6 +207,26 @@ function Home() {
 
             }
         }
+    }
+
+    const getSliderList = (sliderList) => {
+        return sliderList.map((song, key) => {
+            return (
+                <div key={key} onClick={()=>{
+                    navigate('/song/' + song.songNum);
+                }}>
+                    <div className="sliderImage" style={{
+                        backgroundImage: "url(" + song.songImageUrl + ")",
+                    }}>
+                        <div className="sliderFilter">
+                        </div>
+                        <div className="sliderText">
+                            {song.songName}
+                        </div>
+                    </div>
+                </div>
+            )
+        });
     }
 
     useEffect(() => {
@@ -240,19 +239,16 @@ function Home() {
                 options.push(option);
             });
             setCategoryList(options);
-            setSearchTypeComponent(
-                <Select options={options}
-                        styles={{
-                            control: (baseStyles, state) => ({
-                                ...baseStyles,
-                                borderColor : "gray",
-                                backgroundColor: "transparent",
-                            })
-                        }}
-                        onChange={(e) => {
-                            setSelectedCategory(e.value);
-                        }}
-                />);
+            setSearchTypeComponent(<Select options={options}
+                                           styles={{
+                                               control: (baseStyles, state) => ({
+                                                   ...baseStyles, borderColor: "gray", backgroundColor: "transparent",
+                                               })
+                                           }}
+                                           onChange={(e) => {
+                                               setSelectedCategory(e.value);
+                                           }}
+            />);
         }).catch((error) => {
             console.log(error);
         });
@@ -262,6 +258,17 @@ function Home() {
                 song.id = song.songNum;
                 song.singerName = song.singer.singerName
             });
+
+            response.data.sort((a, b) => {
+                return b.replayCount - a.replayCount;
+            });
+
+            let top12List = [];
+            for (let i = 0; i < 12; i++) {
+                top12List.push(response.data[i]);
+            }
+
+            setSliderList(top12List);
             setSongList(response.data);
         }).catch((error) => {
             console.log(error);
@@ -269,8 +276,7 @@ function Home() {
     }, []);
 
 
-    return (
-        <Container fluid>
+    return (<Container fluid>
             <Card className="myTodayCard">
                 <div className="three">
                     <h1>인기차트</h1>
@@ -308,6 +314,11 @@ function Home() {
                     </Row>
                 </div>
                 <hr role="tournament1"/>
+                <div className="mySliderContainer">
+                    <Slider {...settings}>
+                        {getSliderList(sliderList)}
+                    </Slider>
+                </div>
                 <Card.Body className="mySearch">
                     <DataGrid
                         rows={songList}
@@ -315,8 +326,7 @@ function Home() {
                         sx={{
                             '.MuiDataGrid-footerContainer': {
                                 display: 'none !important'
-                            },
-                            '& .super-app-theme--header': {
+                            }, '& .super-app-theme--header': {
                                 backgroundColor: 'rgba(132, 91, 43, 0.7)'
                             }
                         }}
@@ -325,8 +335,7 @@ function Home() {
             </Card>
         </Container>
 
-    )
-        ;
+    );
 }
 
 export default Home;
