@@ -231,7 +231,7 @@ const Cover = () => {
                         <AudioPlayer
                             src={song.songSoundUrl}
                             autoPlay={true}
-                            volume={0}
+                            volume={0.5}
                             style={{
                                 display: "none"
                             }}

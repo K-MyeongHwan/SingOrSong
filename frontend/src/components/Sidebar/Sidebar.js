@@ -19,7 +19,9 @@ function Sidebar({color, image, routes}) {
             title : "로그아웃",
             text : "로그아웃 하시겠습니까?",
             icon : "warning",
-            confirmButtonText: "Yes, delete it!"
+            showCancelButton: true,
+            confirmButtonText: "네",
+            cancelButtonText : "아니오"
         }).then((result)=>{
             if(result.isConfirmed) {
                 axios.post("/api/user/logout").then((response) => {

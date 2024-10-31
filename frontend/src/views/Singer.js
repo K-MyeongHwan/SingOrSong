@@ -30,11 +30,13 @@ function Singer() {
         {
             field: "songNum",
             headerName: "곡 번호",
+            headerClassName: 'super-app-theme--header',
             width: 100
         },
         {
             field: "songAlbum",
             headerName: "노래 앨범",
+            headerClassName: 'super-app-theme--header',
             width: 80,
             renderCell: (params) => {
                 return (
@@ -50,10 +52,11 @@ function Singer() {
         {
             field: "songName",
             headerName: "곡 이름",
+            headerClassName: 'super-app-theme--header',
             width: 200,
             renderCell: (params) => {
                 return (
-                    <div onClick={(e)=>{
+                    <div onClick={(e) => {
                         navigate(`/song/${params.id}`);
                     }}>
                         {params.row.songName}
@@ -64,11 +67,14 @@ function Singer() {
         {
             field: "singerName",
             headerName: "가수",
+            headerClassName: 'super-app-theme--header',
             width: 200
         },
         {
             field: "replayCount",
             headerName: "재생 횟수",
+            headerClassName: 'super-app-theme--header',
+            flex : 1,
             width: 100
         }
     ]
@@ -316,67 +322,71 @@ function Singer() {
         <>
             <Container fluid>
                 <Row>
-                    <Card>
-                        <Card.Header>
-                            <Card.Title className="myTitle">가수 정보</Card.Title>
-                            <div className="mySingerImage">
-                                <input type={"file"} id={"profileImageInput"} hidden={true} onChange={(e) => {
-                                    imgChangeHandler(e)
-                                }}/>
+                    <Card className="myTodayCard">
+                        <div className="three">
+                            <h1>가수 소개</h1>
+                        </div>
+                        <div className="mySingerLikeContainer">
+                            <div className="myLikeContainer">
+                                <div className="right_area">
+                                    <a className={likeIconClassName} onClick={(e) => {
+                                        setLikeActive(!likeActive);
+                                        likeHandler(e);
+                                    }
+                                    }>
+                                        <img src={likeImage}/>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="mySingerImage">
+                            <input type={"file"} id={"profileImageInput"} hidden={true} onChange={(e) => {
+                                imgChangeHandler(e)
+                            }}/>
+                            <img
+                                hidden={isUpdateOn}
+                                alt="..."
+                                src={singerImage.preview_Url}
+                            ></img>
+                            <label htmlFor={"profileImageInput"} hidden={!isUpdateOn}>
                                 <img
-                                    hidden={isUpdateOn}
                                     alt="..."
                                     src={singerImage.preview_Url}
                                 ></img>
-                                <label htmlFor={"profileImageInput"} hidden={!isUpdateOn}>
-                                    <img
-                                        alt="..."
-                                        src={singerImage.preview_Url}
-                                    ></img>
-                                </label>
-                            </div>
-                            <Form>
-                                <Row className="mySingerProfile">
-                                    <div className="myLikeContainer">
-                                        {singer.singerName} 님의 열혈팬 : {fanCount}
-                                    </div>
-                                    <div className="myLikeContainer">
-                                        {updateButton}
-                                    </div>
-                                    <div className="myLikeContainer">
-                                        <div className="right_area">
-                                            <a className={likeIconClassName} onClick={(e) => {
-                                                setLikeActive(!likeActive);
-                                                likeHandler(e);
-                                            }
-                                            }>
-                                                <img src={likeImage}/>
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <Col className="pl-1" md="4">
-                                        <Form.Group>
-                                            <small>가수 이름</small>
-                                            <h3>{singer.singerName}</h3>
-                                        </Form.Group>
-                                    </Col>
-                                    <Col className="pl-1" md="4">
-                                        <Form.Group>
-                                            <small>장르</small>
-                                            <h3>{categoryName}</h3>
-                                        </Form.Group>
-                                    </Col>
-                                    <Col className="pl-1" md="4">
-                                        <Form.Group>
-                                            <small>데뷔 일자</small>
-                                            <h3>{singerDebutDate}</h3>
-                                        </Form.Group>
-                                    </Col>
-                                </Row>
-                            </Form>
-                            <hr/>
-                            <h3>대표곡</h3>
-                        </Card.Header>
+                            </label>
+                        </div>
+                        <Form>
+                            <Row className="mySingerProfile">
+                                <Col className="pl-1" md="3">
+                                    <Form.Group>
+                                        <small>가수 이름</small>
+                                        <h3>{singer.singerName}</h3>
+                                    </Form.Group>
+                                </Col>
+                                <Col className="pl-1" md="3">
+                                    <Form.Group>
+                                        <small>장르</small>
+                                        <h3>{categoryName}</h3>
+                                    </Form.Group>
+                                </Col>
+                                <Col className="pl-1" md="3">
+                                    <Form.Group>
+                                        <small>데뷔 일자</small>
+                                        <h3>{singerDebutDate}</h3>
+                                    </Form.Group>
+                                </Col>
+                                <Col className="pl-1" md="3">
+                                    <Form.Group>
+                                        <small>열혈팬</small>
+                                        <h3>{fanCount}</h3>
+                                    </Form.Group>
+                                </Col>
+                            </Row>
+                        </Form>
+                        <hr role="tournament1"/>
+                        <div className="three">
+                            <h1>대표 곡</h1>
+                        </div>
                         <Card.Body>
                             <DataGrid
                                 rows={songList}
@@ -384,6 +394,9 @@ function Singer() {
                                 sx={{
                                     '.MuiDataGrid-footerContainer': {
                                         display: 'none !important'
+                                    },
+                                    '& .super-app-theme--header': {
+                                        backgroundColor: 'rgba(132, 91, 43, 0.7)'
                                     }
                                 }}
                                 onCellDoubleClick={(params, event) => {
