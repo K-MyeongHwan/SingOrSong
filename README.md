@@ -63,10 +63,10 @@ $ npm start
 ## 3.1 Frotend
 |  |  |  |
 |-----------------|-----------------|-----------------|
-| React    |  <img src="https://singorsong-bucket.s3.ap-northeast-2.amazonaws.com/etc/react.png" alt="React" width="100"> | 18.3.1    |
-| React-Bootstrap    |  <img src="https://singorsong-bucket.s3.ap-northeast-2.amazonaws.com/etc/react_bootstrap.png" alt="React-Bootstrap" width="100"> | 18.3.1    |
-| MaterialUI    |  <img src="https://singorsong-bucket.s3.ap-northeast-2.amazonaws.com/etc/material-ui.svg" alt="MUI" width="100">    | 5.0.0  |
-| SweetAlert2    |  <img src="https://singorsong-bucket.s3.ap-northeast-2.amazonaws.com/etc/sweetAlert2.png" alt="SweetAlert" width="100">    | 1.11.12    |
+| React    |  <img src="https://singorsong-bucket.s3.ap-northeast-2.amazonaws.com/etc/react.jpg" alt="React" width="100"> | 18.3.1    |
+| React-Bootstrap    |  <img src="https://singorsong-bucket.s3.ap-northeast-2.amazonaws.com/etc/react_bootstrap.png" alt="React-Bootstrap" width="100"> | 2.10.4    |
+| MaterialUI    |  <img src="https://singorsong-bucket.s3.ap-northeast-2.amazonaws.com/etc/material-ui.svg" alt="MUI" width="100">    | 5.16.7  |
+| SweetAlert2    |  <img src="https://singorsong-bucket.s3.ap-northeast-2.amazonaws.com/etc/sweetAlert2.png" alt="SweetAlert" width="100">    | 11.12.4    |
 | Javascript    |  <img src="https://singorsong-bucket.s3.ap-northeast-2.amazonaws.com/etc/JS.png" alt="Javascript" width="100"> | 
 
 <br/>
@@ -74,11 +74,13 @@ $ npm start
 ## 3.2 Backend
 |  |  |  |
 |-----------------|-----------------|-----------------|
-| Java    |  <img src="https://singorsong-bucket.s3.ap-northeast-2.amazonaws.com/etc/java.png" alt="Java" width="100">    | 10.12.5    |
-| JPA    |  <img src="https://singorsong-bucket.s3.ap-northeast-2.amazonaws.com/etc/JPA.png" alt="JPA" width="100">    | 10.12.5    |
-| SpringBoot    |  <img src="https://singorsong-bucket.s3.ap-northeast-2.amazonaws.com/etc/springBoot.png" alt="SpringBoot" width="100">    | 10.12.5    |
-| Spring Security    |  <img src="https://singorsong-bucket.s3.ap-northeast-2.amazonaws.com/etc/security.png" alt="Spring Security" width="100">    | 10.12.5    |
-| Spring Security OAuth2 Client    |  <img src="https://singorsong-bucket.s3.ap-northeast-2.amazonaws.com/etc/oauth2.0.jpeg" alt="Spring Security OAuth2 Client" width="100">    | 10.12.5    |
+| Java    |  <img src="https://singorsong-bucket.s3.ap-northeast-2.amazonaws.com/etc/java.png" alt="Java" width="100">    | corretto 17    |
+| SpringBoot    |  <img src="https://singorsong-bucket.s3.ap-northeast-2.amazonaws.com/etc/springBoot.png" alt="SpringBoot" width="100">    | 3.3.2    |
+| SpringBoot Data JPA    |  <img src="https://singorsong-bucket.s3.ap-northeast-2.amazonaws.com/etc/JPA.png" alt="JPA" width="100">    | 3.1.0    |
+| Spring Security    |  <img src="https://singorsong-bucket.s3.ap-northeast-2.amazonaws.com/etc/security.png" alt="Spring Security" width="100">    | 6.3.1    |
+| Spring Security OAuth2 Client    |  <img src="https://singorsong-bucket.s3.ap-northeast-2.amazonaws.com/etc/oauth2.0.jpeg" alt="Spring Security OAuth2 Client" width="100">    | 6.3.1    |
+| Lombok    |  <img src="https://singorsong-bucket.s3.ap-northeast-2.amazonaws.com/etc/lombok.jpg" alt="Lombok" width="100">    | 1.18.34    |
+
 
 <br/>
 
@@ -95,7 +97,7 @@ $ npm start
 ## 3.4 DataBase
 |  |  |
 |-----------------|-----------------|
-| MySQL    |  <img src="https://singorsong-bucket.s3.ap-northeast-2.amazonaws.com/etc/Mysql.webp" alt="MySQL" width="100">    |
+| MySQL    |  <img src="https://singorsong-bucket.s3.ap-northeast-2.amazonaws.com/etc/Mysql.webp" alt="MySQL" width="100">   |8.3.0|
 
 <br/>
 
@@ -217,8 +219,19 @@ PascalCase
 customHook을 사용하는 경우 : use + 함수명
 ```
 
+<br />
+<hr />
+
+
+
 <br/>
 <hr/>
 
-# 5. ScreenShot
+# 5. Site ScreenShot
+<img src="https://singorsong-bucket.s3.ap-northeast-2.amazonaws.com/etc/ranking.png" alt="ranking" style="width:800px;height:400px;">
+<img src="https://singorsong-bucket.s3.ap-northeast-2.amazonaws.com/etc/home.png" alt="home" style="width:800px;height:400px;" >
+<img src="https://singorsong-bucket.s3.ap-northeast-2.amazonaws.com/etc/search.png" alt="search" style="width:800px;height:400px;" >
+<img src="https://singorsong-bucket.s3.ap-northeast-2.amazonaws.com/etc/login.png" alt="login" style="width:800px;height:400px;">
+<img src="https://singorsong-bucket.s3.ap-northeast-2.amazonaws.com/etc/mypage.png" alt="myPage" style="width:800px;height:400px;" >
+<img src="https://singorsong-bucket.s3.ap-northeast-2.amazonaws.com/etc/song.png" alt="song" style="width:800px;height:400px;" >
 
