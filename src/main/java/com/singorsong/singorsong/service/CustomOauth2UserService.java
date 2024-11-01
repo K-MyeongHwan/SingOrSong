@@ -38,8 +38,24 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
         System.out.println(userRequest.getClientRegistration().getRegistrationId());
         System.out.println("*********************************");
 
+        String platform = userRequest.getClientRegistration().getRegistrationId();
+        String email = "";
+
+        if(platform.equals("google")) {
+            email = oauth2User.getAttribute("email");
+        } else if(platform.equals("kakao")) {
+
+            Map<String, String> properties = oauth2User.getAttribute("kakao_account");
+            email = properties.get("email");
+        } else if(platform.equals("naver")) {
+            Map<String, String> properties = oauth2User.getAttribute("response");
+            email = properties.get("email");
+        }
+
+
+        System.out.println(email);
         //회원가입 기록이 없다
-        if(userRepository.findUserByUserEmail(oauth2User.getAttribute("email"))==null) {
+        if(userRepository.findUserByUserEmail(email)==null) {
             System.out.println("첫 로그인");
 
             saveUser(oauth2User, userRequest.getClientRegistration().getRegistrationId());
@@ -64,12 +80,13 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
             user.setPlatform(platformRepository.findByPlatName(registrationId));
         } else if(registrationId.equals("kakao")) {
             Map<String, String> properties = oauth2User.getAttribute("properties");
+            Map<String, String> account = oauth2User.getAttribute("kakao_account");
             Long kakaoId = oauth2User.getAttribute("id");
 
             user = User.builder()
                     .userName(properties.get("nickname"))
                     .userPassword(bCryptPasswordEncoder.encode(String.valueOf(kakaoId)))
-                    .userEmail(oauth2User.getAttribute("email"))
+                    .userEmail(account.get("email"))
                     .nickName(registrationId + "_" + String.valueOf(kakaoId))
                     .build();
             user.setRole(roleRepository.findRoleByRoleId(1));

@@ -58,8 +58,7 @@ const Cover = () => {
 
             analyser.onaudioprocess = function (e) {
                 // 3분(180초) 지나면 자동으로 음성 저장 및 녹음 중지
-                if (e.playbackTime > 10) {
-                    console.log(songSoundDuration);
+                if (e.playbackTime > songSoundDuration) {
                     stream.getAudioTracks().forEach(function (track) {
                         track.stop();
                     });
@@ -164,10 +163,10 @@ const Cover = () => {
         )
     }, [audioUrl]);
 
-    const updateCoinCount = ()=> {
-        axios.post("/api/user/update/coinCount").then((response)=>{
+    const updateCoinCount = () => {
+        axios.post("/api/user/update/coinCount").then((response) => {
 
-        }).catch((error)=>{
+        }).catch((error) => {
             console.log(error);
         })
     }
@@ -295,14 +294,29 @@ const Cover = () => {
                                overlay: {position: 'fixed', background: 'rgba(0, 0, 0, 0.5)'},
                                content: {margin: 'auto', width: '500px', height: '500px'},
                            }}>
+                        <div className="seven">
+                            <h1>커버 정보 미리보기</h1>
+                        </div>
                         <div className="myModalContainer">
-                            <h3>커버 곡 저장</h3>
-                            <h4>닉네임 : {user.nickName}</h4>
-                            <h4>커버 곡 : {song.songName}</h4>
-                            <hr/>
-                            <h4>미리 듣기</h4>
-                            {myAudioPlayer}
-                            <hr/>
+                            <Row className="songInfo">
+                                <Col className="pl-1" md="12">
+                                    <h4><span className="songInfoTitle">유저 닉네임 : </span> {user.nickName}</h4>
+                                </Col>
+                                <Col className="pl-1" md="12">
+                                    <h4><span className="songInfoTitle">커버 곡 이름 :</span> {song.songName}</h4>
+                                </Col>
+                            </Row>
+                        </div>
+                        <div className="three">
+                            <h1>미리 들어보기</h1>
+                        </div>
+                        {myAudioPlayer}
+                        <hr role="tournament1"/>
+                        <div style={{
+                            margin: "auto",
+                            display: "flex",
+                            justifyContent: "center"
+                        }}>
                             <Button
                                 className="myCancelButton"
                                 onClick={() => {

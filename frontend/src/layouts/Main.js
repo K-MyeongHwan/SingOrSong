@@ -13,6 +13,7 @@ import User from "../views/User";
 import Song from "../views/Song";
 import CoverDetail from "../views/CoverDetail";
 import Song_before from "../views/Song_before";
+import CoverDetail_before from "../views/CoverDetail_before";
 
 export const MainContext = createContext();
 
@@ -72,6 +73,7 @@ function Main() {
                                 {getRoutes(routes)}
                                 <Route path="song/:songNum" element={<Song/>}/>
                                 <Route path="songbefore/:songNum" element={<Song_before/>}/>
+                                <Route path="123" element={<CoverDetail_before/>}/>
                                 <Route path="coverDetail/:recordId" element={<CoverDetail/>}/>
                                 <Route path="singer/:singerName" element={<Singer/>}/>
                                 <Route path="user/:nickName" element={<User/>}/>
