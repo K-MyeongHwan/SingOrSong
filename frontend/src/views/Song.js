@@ -196,6 +196,13 @@ const Song = () => {
                             </div>
                         </Col>
                     </Row>
+
+                    <div className="myCoverNavi" onClick={()=>{
+                        navigate("/cover/" + songNum);
+                    }}>
+                        <h4><span className="songInfoTitle">'{song.songName}' 커버 하러가기</span></h4>
+                    </div>
+
                 </div>
             </Modal>
             <div className="myBackDropFilter">

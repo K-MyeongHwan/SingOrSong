@@ -53,7 +53,27 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
             session.setMaxInactiveInterval(60 * 30);
         } else if (type.equals("DefaultOAuth2User")) {
             DefaultOAuth2User oauth2User = (DefaultOAuth2User) authentication.getPrincipal();
-            String email = oauth2User.getAttribute("email");
+
+            System.out.println("*********************************");
+            System.out.println(oauth2User);
+            System.out.println("*********************************");
+
+
+            String email = "";
+
+            if (oauth2User.getAttribute("email") != null) {
+                email = oauth2User.getAttribute("email");
+            } else {
+                if (oauth2User.getAttribute("properties") != null) {
+                    Map<String, String> properties = oauth2User.getAttribute("kakao_account");
+                    email = properties.get("email");
+                } else {
+                    if (oauth2User.getAttribute("response") != null) {
+                        Map<String, String> properties = oauth2User.getAttribute("response");
+                        email = properties.get("email");
+                    }
+                }
+            }
 
             //유저 검색
             User user = userService.getUserByEmail(email);
