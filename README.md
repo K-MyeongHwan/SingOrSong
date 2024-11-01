@@ -74,7 +74,7 @@ $ npm start
 ## 3.2 Backend
 |  |  |  |
 |-----------------|-----------------|-----------------|
-| Java    |  <img src="https://singorsong-bucket.s3.ap-northeast-2.amazonaws.com/etc/java.png" alt="Java" width="100">    | corretto 17    |
+| Java    |  <img src="https://singorsong-bucket.s3.ap-northeast-2.amazonaws.com/etc/java.jpg" alt="Java" width="100">    | corretto 17    |
 | SpringBoot    |  <img src="https://singorsong-bucket.s3.ap-northeast-2.amazonaws.com/etc/springBoot.png" alt="SpringBoot" width="100">    | 3.3.2    |
 | SpringBoot Data JPA    |  <img src="https://singorsong-bucket.s3.ap-northeast-2.amazonaws.com/etc/JPA.png" alt="JPA" width="100">    | 3.1.0    |
 | Spring Security    |  <img src="https://singorsong-bucket.s3.ap-northeast-2.amazonaws.com/etc/security.png" alt="Spring Security" width="100">    | 6.3.1    |
