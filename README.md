@@ -11,16 +11,16 @@ $ npm start
 ```
 
 <br/>
-<br/>
+<hr />
 
 # 1. Project Overview (프로젝트 개요)
 - 프로젝트 이름: Sing Or Song
 - 프로젝트 설명: 어디서든 사용할 수 있는 노래방 앱
 
 <br/>
-<br/>
+<hr/>
 
-# 4. Key Features (주요 기능)
+# 2. Key Features (주요 기능)
 - **회원가입**:
   - 회원가입 시 DB에 유저정보가 등록됩니다.
 
@@ -56,50 +56,50 @@ $ npm start
 <br/>
 <br/>
 
-# 5. Technology Stack (기술 스택)
+# 3. Technology Stack (기술 스택)
 
 <br/>
 
-## 5.1 Frotend
+## 3.1 Frotend
 |  |  |  |
 |-----------------|-----------------|-----------------|
-| React    |  <img src="https://github.com/user-attachments/assets/e3b49dbb-981b-4804-acf9-012c854a2fd2" alt="React" width="100"> | 18.3.1    |
-| React-Bootstrap    |  <img src="https://github.com/user-attachments/assets/e3b49dbb-981b-4804-acf9-012c854a2fd2" alt="React" width="100"> | 18.3.1    |
-| MaterialUI    |  <img src="https://github.com/user-attachments/assets/75a46fa7-ebc0-4a9d-b648-c589f87c4b55" alt="MUI" width="100">    | 5.0.0  |
-| SweetAlert    |  <img src="https://github.com/user-attachments/assets/3632d7d6-8d43-4dd5-ba7a-501a2bc3a3e4" alt="DayJs" width="100">    | 1.11.12    |
-| Javascript    |  <img src="https://github.com/user-attachments/assets/4a7d7074-8c71-48b4-8652-7431477669d1" alt="Javascript" width="100"> | 
+| React    |  <img src="" alt="React" width="100"> | 18.3.1    |
+| React-Bootstrap    |  <img src="" alt="React-Bootstrap" width="100"> | 18.3.1    |
+| MaterialUI    |  <img src="" alt="MUI" width="100">    | 5.0.0  |
+| SweetAlert    |  <img src="" alt="SweetAlert" width="100">    | 1.11.12    |
+| Javascript    |  <img src="" alt="Javascript" width="100"> | 
 
 <br/>
 
-## 5.2 Backend
+## 3.2 Backend
 |  |  |  |
 |-----------------|-----------------|-----------------|
 | Java    |  <img src="https://github.com/user-attachments/assets/1694e458-9bb0-4a0b-8fe6-8efc6e675fa1" alt="Java" width="100">    | 10.12.5    |
-| JPA    |  <img src="https://github.com/user-attachments/assets/1694e458-9bb0-4a0b-8fe6-8efc6e675fa1" alt="Java" width="100">    | 10.12.5    |
-| SpringBoot    |  <img src="https://github.com/user-attachments/assets/1694e458-9bb0-4a0b-8fe6-8efc6e675fa1" alt="Java" width="100">    | 10.12.5    |
-| Spring Security    |  <img src="https://github.com/user-attachments/assets/1694e458-9bb0-4a0b-8fe6-8efc6e675fa1" alt="Java" width="100">    | 10.12.5    |
-| Oauth2.0    |  <img src="https://github.com/user-attachments/assets/1694e458-9bb0-4a0b-8fe6-8efc6e675fa1" alt="Java" width="100">    | 10.12.5    |
+| JPA    |  <img src="https://github.com/user-attachments/assets/1694e458-9bb0-4a0b-8fe6-8efc6e675fa1" alt="JPA" width="100">    | 10.12.5    |
+| SpringBoot    |  <img src="https://github.com/user-attachments/assets/1694e458-9bb0-4a0b-8fe6-8efc6e675fa1" alt="SpringBoot" width="100">    | 10.12.5    |
+| Spring Security    |  <img src="https://github.com/user-attachments/assets/1694e458-9bb0-4a0b-8fe6-8efc6e675fa1" alt="Spring Security" width="100">    | 10.12.5    |
+| Spring Security OAuth2 Client    |  <img src="https://github.com/user-attachments/assets/1694e458-9bb0-4a0b-8fe6-8efc6e675fa1" alt="Spring Security OAuth2 Client" width="100">    | 10.12.5    |
 
 <br/>
 
-## 5.3 Open API
+## 3.3 Open API
 |  |  |
 |-----------------|-----------------|
-| AWS S3 API    |  <img src="https://github.com/user-attachments/assets/483abc38-ed4d-487c-b43a-3963b33430e6" alt="git" width="100">    |
-| Google Login API    |  <img src="https://github.com/user-attachments/assets/483abc38-ed4d-487c-b43a-3963b33430e6" alt="git" width="100">    |
-| Kakao Login API   |  <img src="https://github.com/user-attachments/assets/34141eb9-deca-416a-a83f-ff9543cc2f9a" alt="Notion" width="100">    |
-| Naver Login API   |  <img src="https://github.com/user-attachments/assets/34141eb9-deca-416a-a83f-ff9543cc2f9a" alt="Notion" width="100">    |
+| AWS S3 API    |  <img src="https://github.com/user-attachments/assets/483abc38-ed4d-487c-b43a-3963b33430e6" alt="AWS" width="100">    |
+| Google Login API    |  <img src="https://github.com/user-attachments/assets/483abc38-ed4d-487c-b43a-3963b33430e6" alt="Google" width="100">    |
+| Kakao Login API   |  <img src="https://github.com/user-attachments/assets/34141eb9-deca-416a-a83f-ff9543cc2f9a" alt="Kakao" width="100">    |
+| Naver Login API   |  <img src="https://github.com/user-attachments/assets/34141eb9-deca-416a-a83f-ff9543cc2f9a" alt="Naver" width="100">    |
 
 <br/>
 
-## 5.3 DataBase
+## 3.4 DataBase
 |  |  |
 |-----------------|-----------------|
-| MySQL    |  <img src="https://github.com/user-attachments/assets/483abc38-ed4d-487c-b43a-3963b33430e6" alt="git" width="100">    |
+| MySQL    |  <img src="https://github.com/user-attachments/assets/483abc38-ed4d-487c-b43a-3963b33430e6" alt="MySQL" width="100">    |
 
 <br/>
 
-## 5.3 Cooperation
+## 3.5 Cooperation
 |  |  |
 |-----------------|-----------------|
 | Git    |  <img src="https://github.com/user-attachments/assets/483abc38-ed4d-487c-b43a-3963b33430e6" alt="git" width="100">    |
@@ -107,15 +107,15 @@ $ npm start
 
 <br/>
 
-## 5.3 Programming Tool
+## 3.6 Programming Tool
 |  |  |
 |-----------------|-----------------|
-| IntelliJ IDEA    |  <img src="https://github.com/user-attachments/assets/483abc38-ed4d-487c-b43a-3963b33430e6" alt="git" width="100">    |
+| IntelliJ IDEA    |  <img src="https://github.com/user-attachments/assets/483abc38-ed4d-487c-b43a-3963b33430e6" alt="IntelliJ" width="100">    |
 
 <br/>
-<br/>
+<hr/>
 
-# 8. Coding Convention
+# 4. Coding Convention
 ## 문장 종료
 ```
 // 세미콜론(;)
@@ -218,4 +218,7 @@ customHook을 사용하는 경우 : use + 함수명
 ```
 
 <br/>
-<br/>
+<hr/>
+
+# 5. ScreenShot
+
