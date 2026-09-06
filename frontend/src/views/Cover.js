@@ -34,6 +34,7 @@ const Cover = () => {
     const [soundFile, setSoundFile] = useState();
 
     const onRecAudio = () => {
+        console.log("test");
         // 음원정보를 담은 노드를 생성하거나 음원을 실행또는 디코딩 시키는 일을 한다
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         // 자바스크립트를 통해 음원의 진행상태에 직접접근에 사용된다.
